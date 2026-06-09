@@ -29,7 +29,6 @@ import tools.jackson.module.kotlin.readValue
 @ContextConfiguration(initializers = [MockOAuth2ServerInitializer::class])
 @EnableAutoConfiguration(exclude = [DataSourceAutoConfiguration::class])
 class SecurityIntegrationTest {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 

@@ -10,7 +10,7 @@ object JwtTokenTestUtil {
         audience: String = "aud-localhost",
         groups: List<String> = emptyList(),
         tilleggsClaims: Map<String, Any> = emptyMap(),
-        expiry: Long = 3600
+        expiry: Long = 3600,
     ): String =
         mockOAuth2Server
             .issueToken(
@@ -18,6 +18,6 @@ object JwtTokenTestUtil {
                 subject = subject,
                 audience = audience,
                 claims = mapOf("groups" to groups, "preferred_username" to subject) + tilleggsClaims,
-                expiry = expiry
+                expiry = expiry,
             ).serialize()
 }
