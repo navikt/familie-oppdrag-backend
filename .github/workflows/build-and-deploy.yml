@@ -1,9 +1,6 @@
 name: Build og deploy (dev og prod)
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'main'
 
 jobs:
   build:
@@ -45,6 +42,7 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
   deploy:
     name: Deploy to FSS
+    if: false # ingen deploy inntil videre
     needs: build
     runs-on: ubuntu-latest
     permissions:
