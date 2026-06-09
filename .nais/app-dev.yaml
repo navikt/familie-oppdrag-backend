@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: familie-oppdrag
+  name: familie-oppdrag-backend
   namespace: teamfamilie
   labels:
     team: teamfamilie
@@ -20,11 +20,6 @@ spec:
   prometheus:
     enabled: true
     path: /internal/prometheus
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /serviceuser/data/dev/srvfamilie-oppdrag
-        mountPath: /secret/serviceuser
   replicas:
     min: 2
     max: 4
@@ -35,12 +30,11 @@ spec:
       memory: 700Mi
       cpu: 25m
   ingresses:
-    - https://familie-oppdrag.dev-fss-pub.nais.io
-    - https://familie-oppdrag.dev.intern.nav.no
+    - https://familie-oppdrag-backend.dev.intern.nav.no
   azure:
     application:
       enabled: true
-      allowAllUsers: true
+      allowAllUsers: false # FIXME
   accessPolicy:
     inbound:
       rules:
