@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.rest
 
+import org.springframework.context.annotation.Profile
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
 import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingRequestV2
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
+@Profile("never")
 @RestController
 @RequestMapping("/api")
 @Validated

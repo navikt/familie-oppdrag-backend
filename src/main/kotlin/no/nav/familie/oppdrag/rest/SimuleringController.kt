@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.rest
 
+import org.springframework.context.annotation.Profile
 import jakarta.validation.Valid
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@Profile("never")
 @RestController
 @RequestMapping(
     "/api/simulering",

@@ -9,7 +9,7 @@ import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 
-@Profile("!dev & !dev_psql_mq")
+@Profile("never")
 @Service
 class SimuleringSenderImpl(
     private val port: SimulerFpService,

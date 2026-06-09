@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.config
 
+import org.springframework.context.annotation.Profile
 import no.nav.common.cxf.STSConfigurationUtil
 import no.nav.common.cxf.StsConfig
 import no.nav.okonomi.tilbakekrevingservice.TilbakekrevingPortType
@@ -19,6 +20,7 @@ import javax.xml.namespace.QName
 private const val WSDL = "wsdl/no/nav/tilbakekreving/tilbakekreving-v1-tjenestespesifikasjon.wsdl"
 private const val NAMESPACE = "http://okonomi.nav.no/tilbakekrevingService/"
 
+@Profile("never")
 @Configuration
 class ØkonomiClientConfig(
     @Value("\${TILBAKEKREVING_V1_URL}") private val tilbakekrevingUrl: String,

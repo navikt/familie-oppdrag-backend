@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.config
 
+import org.springframework.context.annotation.Profile
 import com.ibm.mq.constants.CMQC.MQENC_NATIVE
 import com.ibm.mq.jakarta.jms.MQQueue
 import com.ibm.mq.jakarta.jms.MQQueueConnectionFactory
@@ -28,6 +29,7 @@ import java.time.Duration
 
 private const val UTF_8_WITH_PUA = 1208
 
+@Profile("never")
 @Configuration
 class OppdragMQConfig(
     @Value("\${oppdrag.mq.hostname}") val hostname: String,

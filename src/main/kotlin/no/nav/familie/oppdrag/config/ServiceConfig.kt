@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.config
 
+import org.springframework.context.annotation.Profile
 import no.nav.common.cxf.CXFClient
 import no.nav.common.cxf.StsConfig
 import no.nav.system.os.tjenester.simulerfpservice.simulerfpservicegrensesnitt.SimulerFpService
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration
 import java.nio.file.Files
 import java.nio.file.Paths
 
+@Profile("never")
 @Configuration
 class ServiceConfig(
     @Value("\${SECURITYTOKENSERVICE_URL}") private val stsUrl: String,

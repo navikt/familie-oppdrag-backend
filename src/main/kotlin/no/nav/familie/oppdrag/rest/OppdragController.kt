@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.rest
 
+import org.springframework.context.annotation.Profile
 import jakarta.validation.Valid
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.jsonMapper
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+@Profile("never")
 @RestController
 @RequestMapping("/api")
 class OppdragController(

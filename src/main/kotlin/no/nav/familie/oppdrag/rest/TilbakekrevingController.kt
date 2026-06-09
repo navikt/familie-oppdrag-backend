@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.rest
 
+import org.springframework.context.annotation.Profile
 import jakarta.validation.Valid
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.oppdrag.tilbakekreving.ØkonomiClient
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.math.BigInteger
 import java.util.UUID
 
+@Profile("never")
 @RestController
 @RequestMapping("/api/tilbakekreving")
 class TilbakekrevingController(

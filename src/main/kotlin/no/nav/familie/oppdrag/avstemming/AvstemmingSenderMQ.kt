@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.avstemming
 
+import org.springframework.context.annotation.Profile
 import no.nav.familie.oppdrag.grensesnittavstemming.JaxbGrensesnittAvstemmingsdata
 import no.nav.familie.oppdrag.konsistensavstemming.JaxbKonsistensavstemming
 import no.nav.virksomhet.tjenester.avstemming.informasjon.konsistensavstemmingsdata.v1.Konsistensavstemmingsdata
@@ -12,6 +13,7 @@ import org.springframework.jms.JmsException
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Service
 
+@Profile("never")
 @Service
 class AvstemmingSenderMQ(
     val jmsTemplateAvstemming: JmsTemplate,

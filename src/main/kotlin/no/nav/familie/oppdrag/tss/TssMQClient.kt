@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.tss
 
+import org.springframework.context.annotation.Profile
 import jakarta.jms.Message
 import jakarta.jms.Session
 import no.nav.familie.oppdrag.iverksetting.Jaxb
@@ -12,6 +13,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
 
+@Profile("never")
 @Service
 class TssMQClient(
     @Qualifier("jmsTemplateTss") private val jmsTemplateTss: JmsTemplate,
