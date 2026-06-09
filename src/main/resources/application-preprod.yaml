@@ -7,7 +7,7 @@ oppdrag.mq:
   channel: Q1_FAMILIE_OPPDRAG
   hostname: b27apvl220.preprod.local
   port: 1413
-  enabled: true
+  enabled: false
 
 spring:
   datasource:
