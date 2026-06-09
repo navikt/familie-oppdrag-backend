@@ -415,7 +415,7 @@
         </repository>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/navikt/familie-oppdrag</url>
+            <url>https://maven.pkg.github.com/navikt/familie-felles</url>
         </repository>
     </repositories>
 
