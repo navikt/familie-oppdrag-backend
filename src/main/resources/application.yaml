@@ -1,5 +1,5 @@
 application:
-  name: familie-oppdrag
+  name: familie-oppdrag-backend
 
 server:
   port: 8087
@@ -58,11 +58,6 @@ springdoc:
   pathsToMatch: /v3/api-docs,/api/**
   swagger-ui:
     disable-swagger-default-url: true
-
-vault:
-  systembruker:
-    password: "/secret/serviceuser/password"
-    username: "/secret/serviceuser/username"
 
 BA_SAK_CLIENT_ID: ""
 EF_SAK_CLIENT_ID: ""
