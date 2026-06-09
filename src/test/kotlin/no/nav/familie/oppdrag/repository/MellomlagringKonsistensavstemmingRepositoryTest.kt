@@ -22,7 +22,6 @@ import kotlin.test.assertEquals
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest(
     classes = [MellomlagringKonsistensavstemmingRepositoryTest.TestConfig::class],
-    properties = ["spring.cloud.vault.enabled=false"],
 )
 @DisabledIfEnvironmentVariable(named = "CIRCLECI", matches = "true")
 @Testcontainers

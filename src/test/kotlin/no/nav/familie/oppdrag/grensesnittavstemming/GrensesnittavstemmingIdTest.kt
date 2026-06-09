@@ -34,7 +34,7 @@ import java.util.UUID
 
 @ActiveProfiles("dev")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@SpringBootTest(classes = [TestConfig::class], properties = ["spring.cloud.vault.enabled=false"])
+@SpringBootTest(classes = [TestConfig::class])
 @Testcontainers
 class GrensesnittavstemmingIdTest(
     @Autowired

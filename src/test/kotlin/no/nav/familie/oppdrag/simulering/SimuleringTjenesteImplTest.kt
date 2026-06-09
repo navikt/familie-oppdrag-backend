@@ -29,7 +29,7 @@ import kotlin.test.assertTrue
 
 @ActiveProfiles("dev")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@SpringBootTest(classes = [SimuleringTjenesteImplTest.TestConfig::class], properties = ["spring.cloud.vault.enabled=false"])
+@SpringBootTest(classes = [SimuleringTjenesteImplTest.TestConfig::class])
 @DisabledIfEnvironmentVariable(named = "CIRCLECI", matches = "true")
 @Testcontainers
 internal class SimuleringTjenesteImplTest {

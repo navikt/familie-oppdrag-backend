@@ -33,24 +33,12 @@
         <cxf.version>4.1.4</cxf.version>
 
         <mockk.version>1.14.9</mockk.version>
-        <spring-cloud.version>2025.1.1</spring-cloud.version>
+        <spring-retry.version>2.0.12</spring-retry.version> <!-- sløyfes? -->
         <testcontainers.version>1.21.4</testcontainers.version>
         <tjenestespesifikasjoner.version>1.0_20251127080538_249148b</tjenestespesifikasjoner.version>
         <springdoc.version>3.0.3</springdoc.version>
 
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot -->
@@ -178,18 +166,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.vault</groupId>
-            <artifactId>spring-vault-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-vault-config-databases</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -346,6 +322,7 @@
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
+            <version>${spring-retry.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>

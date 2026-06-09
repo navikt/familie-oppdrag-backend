@@ -3,10 +3,6 @@ spring:
     url: jdbc:postgresql://postgres-oppdrag:5432/familieoppdrag
     username: familie
     password: familie-pwd
-  cloud:
-    vault:
-      database:
-        role: familie
   security:
     oauth2:
       resourceserver:
@@ -25,11 +21,6 @@ oppdrag.mq:
   user: admin
   password: passw0rd
   enabled: true
-
-vault:
-  systembruker:
-    password: "src/test/resources/vault/serviceuser_password"
-    username: "src/test/resources/vault/serviceuser_username"
 
 logging:
   config: "classpath:logback-e2e.xml"

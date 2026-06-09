@@ -31,7 +31,7 @@ import kotlin.test.assertFailsWith
 
 @ActiveProfiles("dev")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@SpringBootTest(classes = [TestConfig::class], properties = ["spring.cloud.vault.enabled=false"])
+@SpringBootTest(classes = [TestConfig::class])
 @DisabledIfEnvironmentVariable(named = "CIRCLECI", matches = "true")
 @Testcontainers
 internal class OppdragLagerRepositoryJdbcTest {

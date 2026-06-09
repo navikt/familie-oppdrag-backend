@@ -24,11 +24,6 @@ spring:
           issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
           audiences: ${AZURE_APP_CLIENT_ID}
 
-vault:
-  systembruker:
-    password: "src/test/resources/vault/serviceuser_password"
-    username: "src/test/resources/vault/serviceuser_username"
-
 OPPDRAG_SERVICE_URL: #Mockes ut lokalt
 SECURITYTOKENSERVICE_URL: https://localhost:8063/soap/SecurityTokenServiceProvider/
 AZURE_OPENID_CONFIG_ISSUER: "https://login.microsoftonline.com/navq.onmicrosoft.com/v2.0"

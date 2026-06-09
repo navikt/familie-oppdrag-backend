@@ -32,7 +32,7 @@ import kotlin.test.assertEquals
 @ActiveProfiles("dev")
 @ContextConfiguration(initializers = [Containers.MQInitializer::class])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@SpringBootTest(classes = [TestConfig::class], properties = ["spring.cloud.vault.enabled=false"])
+@SpringBootTest(classes = [TestConfig::class])
 @EnableJms
 @DisabledIfEnvironmentVariable(named = "CIRCLECI", matches = "true")
 @Testcontainers
