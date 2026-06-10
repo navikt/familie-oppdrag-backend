@@ -37,7 +37,7 @@ jobs:
         run: |
           curl -X POST --data "{\"text\": \"Build av $GITHUB_REPOSITORY feilet - $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" $WEBHOOK_URL
         env:
-          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          WEBHOOK_URL: ${{ secrets.BAKS_DEPLOYMENTS_SLACK_WEBHOOK }}
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
   deploy:
@@ -67,4 +67,4 @@ jobs:
         run: |
           curl -X POST --data "{\"text\": \"Deploy av $GITHUB_REPOSITORY feilet - $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" $WEBHOOK_URL
         env:
-          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          WEBHOOK_URL: ${{ secrets.BAKS_DEPLOYMENTS_SLACK_WEBHOOK }}
