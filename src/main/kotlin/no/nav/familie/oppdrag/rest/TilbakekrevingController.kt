@@ -1,6 +1,5 @@
 package no.nav.familie.oppdrag.rest
 
-import org.springframework.context.annotation.Profile
 import jakarta.validation.Valid
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.oppdrag.tilbakekreving.ØkonomiClient
@@ -10,6 +9,7 @@ import no.nav.okonomi.tilbakekrevingservice.KravgrunnlagHentDetaljRequest
 import no.nav.okonomi.tilbakekrevingservice.KravgrunnlagHentDetaljResponse
 import no.nav.okonomi.tilbakekrevingservice.TilbakekrevingsvedtakRequest
 import no.nav.okonomi.tilbakekrevingservice.TilbakekrevingsvedtakResponse
+import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping

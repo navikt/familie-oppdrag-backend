@@ -1,6 +1,5 @@
 package no.nav.familie.oppdrag.rest
 
-import org.springframework.context.annotation.Profile
 import jakarta.validation.Valid
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -12,6 +11,7 @@ import no.nav.familie.oppdrag.simulering.SimuleringTjeneste
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

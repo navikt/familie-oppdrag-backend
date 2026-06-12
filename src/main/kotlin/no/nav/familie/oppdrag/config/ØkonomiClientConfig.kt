@@ -1,6 +1,5 @@
 package no.nav.familie.oppdrag.config
 
-import org.springframework.context.annotation.Profile
 import no.nav.common.cxf.STSConfigurationUtil
 import no.nav.common.cxf.StsConfig
 import no.nav.okonomi.tilbakekrevingservice.TilbakekrevingPortType
@@ -15,6 +14,7 @@ import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import javax.xml.namespace.QName
 
 private const val WSDL = "wsdl/no/nav/tilbakekreving/tilbakekreving-v1-tjenestespesifikasjon.wsdl"

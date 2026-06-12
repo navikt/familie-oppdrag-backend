@@ -1,6 +1,5 @@
 package no.nav.familie.oppdrag.tss
 
-import org.springframework.context.annotation.Profile
 import no.nav.familie.kontrakter.ba.tss.SamhandlerAdresse
 import no.nav.familie.kontrakter.ba.tss.SamhandlerInfo
 import no.nav.familie.kontrakter.ba.tss.SøkSamhandlerInfo
@@ -13,6 +12,7 @@ import no.rtv.namespacetss.TypeOD910
 import no.rtv.namespacetss.TypeSamhAdr
 import no.rtv.namespacetss.TypeSamhAvd
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
 @Profile("never")

@@ -1,6 +1,5 @@
 package no.nav.familie.oppdrag.tss
 
-import org.springframework.context.annotation.Profile
 import io.swagger.v3.oas.annotations.Operation
 import no.nav.familie.kontrakter.ba.tss.SamhandlerInfo
 import no.nav.familie.kontrakter.ba.tss.SøkSamhandlerInfo
@@ -8,6 +7,7 @@ import no.nav.familie.kontrakter.ba.tss.SøkSamhandlerInfoRequest
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.rtv.namespacetss.TOutputElementer
 import no.rtv.namespacetss.TypeOD910
+import org.springframework.context.annotation.Profile
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
