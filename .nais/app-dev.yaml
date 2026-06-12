@@ -9,6 +9,8 @@ metadata:
 spec:
   image: {{ image }}
   port: 8087
+  envFrom:
+    - secret: familie-oppdrag-backend
   liveness:
     path: /internal/health/liveness
     initialDelay: 30
