@@ -33,7 +33,6 @@
         <cxf.version>4.1.4</cxf.version>
 
         <mockk.version>1.14.9</mockk.version>
-        <spring-retry.version>2.0.12</spring-retry.version> <!-- sløyfes? -->
         <testcontainers.version>1.21.4</testcontainers.version>
         <tjenestespesifikasjoner.version>1.0_20251127080538_249148b</tjenestespesifikasjoner.version>
         <springdoc.version>3.0.3</springdoc.version>
@@ -319,11 +318,6 @@
             <version>1.1.1</version>
         </dependency>
         -->
-        <dependency>
-            <groupId>org.springframework.retry</groupId>
-            <artifactId>spring-retry</artifactId>
-            <version>${spring-retry.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-common</artifactId>
