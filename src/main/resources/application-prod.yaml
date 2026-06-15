@@ -11,7 +11,7 @@ oppdrag.mq:
 
 spring:
   datasource:
-    url: jdbc:postgresql://A01DBVL035.adeo.no:5432/familie-oppdrag-15
+    url: ${DB_JDBC_URL}
 
 OPPDRAG_SERVICE_URL: https://wasapp.adeo.no/cics/services/simulerFpServiceWSBinding
 SECURITYTOKENSERVICE_URL: https://sts.adeo.no/SecurityTokenServiceProvider/

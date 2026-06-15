@@ -10,7 +10,7 @@ object DevPsqlMqLauncher {
     @JvmStatic
     fun main(args: Array<String>) {
         val psql =
-            KPostgreSQLContainer("postgres:15.2")
+            KPostgreSQLContainer("postgres:17.9")
                 .withDatabaseName("familie-oppdrag")
                 .withUsername("postgres")
                 .withPassword("test")
