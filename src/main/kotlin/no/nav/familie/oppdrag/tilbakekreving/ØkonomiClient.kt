@@ -15,8 +15,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigInteger
 import java.util.UUID
+import org.springframework.context.annotation.Profile
 
 @Service
+@Profile("never")
 class ØkonomiClient(
     private val økonomiService: TilbakekrevingPortType,
 ) {

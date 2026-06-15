@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Profile("!e2e")
+@Profile("never") // !e2e
 class OppdragServiceImpl(
     @Autowired private val oppdragSender: OppdragSender,
     @Autowired private val oppdragLagerRepository: OppdragLagerRepository,
