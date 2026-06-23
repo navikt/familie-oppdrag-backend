@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.5</version>
+        <version>4.0.6</version>
     </parent>
 
     <properties>
@@ -19,25 +19,41 @@
         <sha1/>
         <changelist>-SNAPSHOT</changelist>
         <jvmTarget>25</jvmTarget>
-        <kotlin.version>2.3.20</kotlin.version>
+        <kotlin.version>2.4.0</kotlin.version>
         <main-class>no.nav.familie.oppdrag.LauncherKt</main-class>
-        <felles.version>4.20260428145828_c16a1d8</felles.version>
-	    <kontrakter.version>4.0_20260420135248_2e6d9ea</kontrakter.version>
+        <felles.version>4.20260529121328_2754f7c</felles.version>
+	    <kontrakter.version>4.0_20260611084408_a47ed94</kontrakter.version>
 
         <!--
         denne må oppdateres manuellt då eks `mvn versions:update-properties` henter versjon 2023.
         https://github.com/navikt/common-java-modules/releases
         -->
-        <common-java-modules.version>3.2025.09.03_08.33-728ff4acbfdb</common-java-modules.version>
-        <jaxb.version>4.0.7</jaxb.version>
-        <cxf.version>4.1.4</cxf.version>
+        <common-java-modules.version>4.2026.06.09_07.11-eccd6d131c44</common-java-modules.version>
+        <jaxb.version>4.0.9</jaxb.version>
+        <cxf.version>4.2.2</cxf.version>
 
         <mockk.version>1.14.9</mockk.version>
         <testcontainers.version>1.21.4</testcontainers.version>
-        <tjenestespesifikasjoner.version>1.0_20251127080538_249148b</tjenestespesifikasjoner.version>
+        <tjenestespesifikasjoner.version>1.0_20260611160851_f0e234f</tjenestespesifikasjoner.version>
         <springdoc.version>3.0.3</springdoc.version>
 
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Override Spring Boot BOM's okhttp 4.x pins to align with mock-oauth2-server 4.0.0 which requires mockwebserver 5.x -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>mockwebserver</artifactId>
+                <version>5.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>5.3.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot -->
@@ -140,7 +156,7 @@
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>com.ibm.mq.jakarta.client</artifactId>
-            <version>9.4.5.0</version>
+            <version>9.4.5.1</version>
         </dependency>
         <dependency>
             <groupId>jakarta.jms</groupId>
@@ -161,6 +177,12 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>4.2.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
