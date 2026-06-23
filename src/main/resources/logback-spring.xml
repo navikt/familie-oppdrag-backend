@@ -35,4 +35,5 @@
     <logger name="org.apache.wss4j.common.crypto.CryptoBase" level="ERROR"/>
     <logger name="net.shibboleth.utilities.java.support.primitive" level="ERROR"/> <!-- Kan fjernes når CXF oppgraderes til å bruke ny major-version (fra 9 -> 10) i net.shibboleth:shib-support:9.1.3 -->
     <logger name="org.apache.cxf.ws.addressing" level="ERROR" additivity="true"/> <!-- Ignorer WS Addressing warnings. Avhenger antakeligvis av en Spring-annotasjon som oppdrag må sette hos seg -->
+    <logger name="org.hibernate.orm.connections.pooling" level="WARN"/> <!-- Unngå logging av JDBC URL -->
 </configuration>
