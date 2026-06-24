@@ -31,7 +31,7 @@ import java.time.LocalDate
 
 @Service
 @ApplicationScope
-@Profile("!e2e")
+@Profile("never") // !e2e
 class SimuleringTjenesteImpl(
     @Autowired val simuleringSender: SimuleringSender,
     @Autowired val simulerBeregningRequestMapper: SimulerBeregningRequestMapper,
