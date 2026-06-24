@@ -33,15 +33,16 @@ spec:
       cpu: 25m
   ingresses:
     - https://familie-oppdrag-backend.dev.intern.nav.no
-  sqlInstances:
-    - type: POSTGRES_17 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
-      tier: db-custom-1-3840
-      name: familie-oppdrag-17
-      autoBackupHour: 2
-      diskAutoresize: true
-      databases:
-        - name: familie-oppdrag
-          envVarPrefix: DB
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_17 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
+        tier: db-custom-1-3840
+        name: familie-oppdrag-17
+        autoBackupHour: 2
+        diskAutoresize: true
+        databases:
+          - name: familie-oppdrag
+            envVarPrefix: DB
   azure:
     application:
       enabled: true
