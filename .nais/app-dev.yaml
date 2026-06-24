@@ -32,7 +32,7 @@ spec:
       memory: 700Mi
       cpu: 25m
   ingresses:
-    - https://familie-oppdrag-backend.dev.intern.nav.no
+    - https://familie-oppdrag-backend.intern.dev.nav.no
   gcp:
     sqlInstances:
       - type: POSTGRES_17 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
