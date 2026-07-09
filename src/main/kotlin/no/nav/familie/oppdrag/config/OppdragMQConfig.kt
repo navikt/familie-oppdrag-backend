@@ -87,7 +87,7 @@ class OppdragMQConfig(
         cf.setStringProperty(WMQConstants.WMQ_CHANNEL, channel)
         cf.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQ_CM_CLIENT)
         cf.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER, queuemanager)
-        cf.setStringProperty(WMQConstants.WMQ_APPLICATIONNAME, "familie-oppdrag")
+        cf.setStringProperty(WMQConstants.WMQ_APPLICATIONNAME, "familie-oppdrag-backend") //TODO: kanskje denne gir feil
         cf.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true)
         cf.setStringProperty(WMQConstants.USERID, stsConfig.username)
         cf.setStringProperty(WMQConstants.PASSWORD, stsConfig.password)

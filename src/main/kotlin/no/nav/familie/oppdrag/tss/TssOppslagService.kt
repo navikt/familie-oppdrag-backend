@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
-@Profile("never")
+@Profile("dev")
 @Service
 class TssOppslagService(
     private val tssMQClient: TssMQClient,

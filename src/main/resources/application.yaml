@@ -44,7 +44,6 @@ management:
   endpoints.web:
     exposure.include: info, health, metrics, prometheus
     base-path: "/internal"
-  metrics.export.prometheus.enabled: true
   health:
     livenessstate:
       enabled: true
@@ -52,6 +51,10 @@ management:
       enabled: true
     db:
       enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 springdoc:
   packagesToScan: no.nav.familie.oppdrag

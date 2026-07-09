@@ -13,7 +13,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
 
-@Profile("never")
+@Profile("dev")
 @Service
 class TssMQClient(
     @Qualifier("jmsTemplateTss") private val jmsTemplateTss: JmsTemplate,
