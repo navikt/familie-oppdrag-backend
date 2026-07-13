@@ -29,7 +29,7 @@ import java.time.Duration
 
 private const val UTF_8_WITH_PUA = 1208
 
-@Profile("never")
+
 @Configuration
 class OppdragMQConfig(
     @Value("\${oppdrag.mq.hostname}") val hostname: String,
@@ -131,6 +131,7 @@ class OppdragMQConfig(
     }
 
     @Bean
+    @Profile("never")
     fun jmsTemplateAvstemming(mqQueueConnectionFactory: ConnectionFactory): JmsTemplate =
         JmsTemplate(mqQueueConnectionFactory).apply { defaultDestinationName = avstemmingQueue }
 }

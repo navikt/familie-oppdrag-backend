@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
-@Profile("never")
+
 @Configuration
 class ServiceConfig(
     @Value("\${SECURITYTOKENSERVICE_URL}") private val stsUrl: String,
@@ -27,6 +27,7 @@ class ServiceConfig(
             .password(systemuserPassword)
             .build()
 
+    @Profile("never")
     @Bean
     fun simulerFpServicePort(stsConfig: StsConfig): SimulerFpService =
         CXFClient(SimulerFpService::class.java)
