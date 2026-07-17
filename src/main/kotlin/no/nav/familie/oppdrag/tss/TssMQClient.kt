@@ -134,6 +134,6 @@ class TssMQClient(
     }
 
     companion object {
-        const val BRUKER_ID = "familie-oppdrag"
+        const val BRUKER_ID = "familie-oppdrag-backend"
     }
 }
