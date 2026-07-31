@@ -75,6 +75,7 @@ spec:
         - host: mpls02.adeo.no
           ports:
             - port: 1414
+        - host: familie-ws-proxy.prod-fss-pub.nais.io
   observability:
     logging:
       destinations:

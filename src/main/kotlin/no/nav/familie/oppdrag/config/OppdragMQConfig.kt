@@ -29,7 +29,6 @@ import java.time.Duration
 
 private const val UTF_8_WITH_PUA = 1208
 
-
 @Configuration
 class OppdragMQConfig(
     @Value("\${oppdrag.mq.hostname}") val hostname: String,

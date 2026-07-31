@@ -83,6 +83,7 @@ spec:
         - host: b27apvl220.preprod.local
           ports:
             - port: 1413
+        - host: familie-ws-proxy.dev-fss-pub.nais.io
 
   observability:
     logging:

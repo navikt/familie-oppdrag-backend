@@ -56,6 +56,26 @@ CREATE DATABASE "familie-oppdrag";
 
 Les mer om postgres på nav [her](https://github.com/navikt/utvikling/blob/master/PostgreSQL.md). For å hente credentials manuelt, se [her](https://github.com/navikt/utvikling/blob/master/Vault.md). 
 
+## Simulering mot Oppdrag (via familie-ws-proxy)
+
+Appen kjører i GCP, mens Oppdrag (CICS) og STS kun er tilgjengelig on-premise (FSS).
+Begge kall rutes derfor via [familie-ws-proxy](https://github.com/navikt/familie-ws-proxy):
+
+| Kall                        | URL                                                                  |
+|-----------------------------|----------------------------------------------------------------------|
+| SAML-token for systembruker | `SECURITYTOKENSERVICE_URL` → `.../sts/SecurityTokenServiceProvider/` |
+| `simulerBeregning`          | `OPPDRAG_SERVICE_URL` → `.../cics/...`                               |
+
+Proxyen krever et Entra ID-token i `X-Proxy-Authorization`. Tokenet hentes
+maskin-til-maskin via Texas (`EntraIDClient`) med target `WS_PROXY_SCOPE`, og
+settes på begge kall av `WsProxyAuthorizationOutInterceptor`.
+
+Merk at stien under `/cics/` er ulik i preprod og prod, fordi basen er
+`cics-q1.adeo.no` i preprod og `wasapp.adeo.no` i prod.
+
+Lokalt (profilene `dev` og `dev_psql_mq`) brukes `SimuleringSenderMock`, så
+verken proxy eller Oppdrag kontaktes.
+
 ## Teste i preprod, f.eks Postman
 I q2 er det mulig å hente ut azure test tokens fra azure-token-generator:
 client credential: https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-fss.teamfamilie.familie-oppdrag

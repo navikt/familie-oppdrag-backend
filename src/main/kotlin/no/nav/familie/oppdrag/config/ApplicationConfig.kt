@@ -10,12 +10,11 @@ import org.springframework.boot.web.server.servlet.ServletWebServerFactory
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootConfiguration
 @EntityScan(ApplicationConfig.PAKKENAVN)
-@ComponentScan(ApplicationConfig.PAKKENAVN)
+@ComponentScan(ApplicationConfig.PAKKENAVN, "no.nav.familie.felles.tokenklient")
 @EnableScheduling
 class ApplicationConfig {
     @Bean

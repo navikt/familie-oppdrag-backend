@@ -13,6 +13,8 @@ spring:
   datasource:
     url: ${DB_JDBC_URL}
 
-OPPDRAG_SERVICE_URL: "https://cics-q1.adeo.no/oppdrag/simulerFpServiceWSBinding"
-SECURITYTOKENSERVICE_URL: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
+# Simulering går via familie-ws-proxy i FSS. Se README for detaljer.
+OPPDRAG_SERVICE_URL: "https://familie-ws-proxy.dev-fss-pub.nais.io/cics/oppdrag/simulerFpServiceWSBinding"
+SECURITYTOKENSERVICE_URL: https://familie-ws-proxy.dev-fss-pub.nais.io/sts/SecurityTokenServiceProvider/
+WS_PROXY_SCOPE: api://dev-fss.teamfamilie.familie-ws-proxy/.default
 TILBAKEKREVING_V1_URL: https://cics-q1.adeo.no/oppdrag/K231CW80

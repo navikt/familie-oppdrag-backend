@@ -6,7 +6,7 @@ import no.nav.system.os.tjenester.simulerfpservice.simulerfpservicegrensesnitt.S
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
-@Profile("never")
+@Profile("!e2e")
 @Service
 class SimuleringSenderImpl(
     private val port: SimulerFpService,
