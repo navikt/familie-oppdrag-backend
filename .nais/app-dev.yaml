@@ -50,7 +50,6 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: familie-ks-sak
         - application: familie-ba-sak-lokal
           cluster: dev-gcp
         - application: familie-ba-sak

@@ -54,7 +54,6 @@ spec:
     inbound:
       rules:
         - application: familie-ks-sak
-        - application: familie-ks-sak
           cluster: prod-gcp
         - application: familie-ba-sak
           cluster: prod-gcp
