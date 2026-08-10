@@ -42,7 +42,6 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
   deploy:
     name: Deploy to GCP
-    if: false # ingen deploy inntil videre
     needs: build
     runs-on: ubuntu-latest
     permissions:
