@@ -11,6 +11,7 @@ spec:
   port: 8087
   envFrom:
     - secret: familie-oppdrag-backend
+    - secret: familie-oppdrag-backend-unleash-api-token
   liveness:
     path: /internal/health/liveness
     initialDelay: 30
@@ -83,6 +84,7 @@ spec:
           ports:
             - port: 1413
         - host: familie-ws-proxy.dev-fss-pub.nais.io
+        - host: teamfamilie-unleash-api.nav.cloud.nais.io
 
   observability:
     logging:
