@@ -27,3 +27,6 @@ logging:
 
 SECURITYTOKENSERVICE_URL: https://localhost:8063/soap/SecurityTokenServiceProvider/
 OPPDRAG_SERVICE_URL: #Mockes ut lokalt
+UNLEASH_SERVER_API_URL: http://dummy/api/
+UNLEASH_SERVER_API_TOKEN: dummy
+NAIS_APP_NAME: familie-oppdrag-backend
