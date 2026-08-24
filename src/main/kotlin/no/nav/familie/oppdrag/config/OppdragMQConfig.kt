@@ -38,6 +38,7 @@ class OppdragMQConfig(
     @Value("\${oppdrag.mq.avstemming}") val avstemmingQueue: String,
     @Value("\${oppdrag.mq.tss}") val tssQueue: String,
     @Value("\${oppdrag.mq.port}") val port: Int,
+    @Value("\${oppdrag.mq.mottak.enabled}") val mottakEnabled: Boolean,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
@@ -118,6 +119,7 @@ class OppdragMQConfig(
         transactionManager.connectionFactory = mqQueueConnectionFactory
         factory.setTransactionManager(transactionManager)
         factory.setSessionTransacted(true)
+        factory.setAutoStartup(mottakEnabled)
         factory.setErrorHandler {
             logger.error("Feilet håndtering av melding, se secureLogs")
             secureLogger.error("Feilet håndtering av melding", it)
