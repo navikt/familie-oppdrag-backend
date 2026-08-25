@@ -13,7 +13,7 @@ class FeatureToggleService(
         defaultValue: Boolean = false,
     ): Boolean = unleashService.isEnabled(toggle.navn, defaultValue)
 
-    fun isEnabled(toggle: FeatureToggle, defaultValue: Boolean = false, fagsakId: String): Boolean =
+    fun isEnabled(toggle: FeatureToggle, fagsakId: String): Boolean =
         unleashService.isEnabled(toggle.navn,properties =
             mapOf(
                 UnleashContextFields.FAGSAK_ID to fagsakId,
