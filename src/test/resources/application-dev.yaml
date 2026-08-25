@@ -31,3 +31,5 @@ AZURE_APP_CLIENT_ID: "local-client-id"
 UNLEASH_SERVER_API_URL: http://dummy/api/
 UNLEASH_SERVER_API_TOKEN: dummy
 NAIS_APP_NAME: familie-oppdrag-backend
+SERVICEUSER_USERNAME: "admin"
+SERVICEUSER_PASSWORD: "passw0rd"
