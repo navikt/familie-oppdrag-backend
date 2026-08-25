@@ -38,7 +38,7 @@ class OppdragMQConfig(
     @Value("\${oppdrag.mq.avstemming}") val avstemmingQueue: String,
     @Value("\${oppdrag.mq.tss}") val tssQueue: String,
     @Value("\${oppdrag.mq.port}") val port: Int,
-    @Value("\${oppdrag.mq.mottak.enabled}") val mottakEnabled: Boolean,
+    @Value("\${oppdrag.mq.mottak.enabled:false}") val mottakEnabled: Boolean,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")

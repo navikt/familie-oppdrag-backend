@@ -36,6 +36,7 @@ object Containers {
                     "oppdrag.mq.user=admin",
                     "oppdrag.mq.password: passw0rd",
                     "oppdrag.mq.enabled: true",
+                    "oppdrag.mq.mottak.enabled: true",
                 ).applyTo(configurableApplicationContext.environment)
         }
     }
