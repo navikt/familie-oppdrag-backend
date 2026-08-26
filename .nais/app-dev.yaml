@@ -25,7 +25,7 @@ spec:
     path: /internal/prometheus
   replicas:
     min: 2
-    max: 4
+    max: 2
   resources:
     limits:
       memory: 700Mi
