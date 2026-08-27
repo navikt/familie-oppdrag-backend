@@ -18,7 +18,6 @@ import java.math.BigInteger
 import java.util.UUID
 
 @Service
-@Profile("never")
 class ØkonomiClient(
     private val økonomiService: TilbakekrevingPortType,
 ) {
