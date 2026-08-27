@@ -20,7 +20,6 @@ import javax.xml.namespace.QName
 private const val WSDL = "wsdl/no/nav/tilbakekreving/tilbakekreving-v1-tjenestespesifikasjon.wsdl"
 private const val NAMESPACE = "http://okonomi.nav.no/tilbakekrevingService/"
 
-@Profile("never")
 @Configuration
 class ØkonomiClientConfig(
     @Value("\${TILBAKEKREVING_V1_URL}") private val tilbakekrevingUrl: String,
