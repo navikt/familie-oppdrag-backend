@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.Objects.isNull
 import java.util.UUID
 
-@Profile("never")
+@Profile("preprod")
 @Service
 class KonsistensavstemmingService(
     private val avstemmingSender: AvstemmingSender,

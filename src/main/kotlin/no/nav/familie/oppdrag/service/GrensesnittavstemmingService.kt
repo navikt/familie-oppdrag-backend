@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 import kotlin.enums.enumEntries
 import kotlin.jvm.optionals.getOrNull
 
-@Profile("never")
+@Profile("preprod")
 @Service
 class GrensesnittavstemmingService(
     private val avstemmingSender: AvstemmingSender,
