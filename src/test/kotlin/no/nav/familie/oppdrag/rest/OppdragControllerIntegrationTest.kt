@@ -67,7 +67,7 @@ internal class OppdragControllerIntegrationTest(
     @Test
     fun `Test skal lagre oppdrag for utbetalingoppdrag`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE, utbetalingsoppdrag.saksnummer ) } returns true
+        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
 
         oppdragController.sendOppdrag(utbetalingsoppdrag)
 
@@ -77,7 +77,7 @@ internal class OppdragControllerIntegrationTest(
     @Test
     fun `Test skal returnere https statuscode 409 ved dobbel sending`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE, utbetalingsoppdrag.saksnummer ) } returns true
+        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
 
         val responseFørsteSending = oppdragController.sendOppdrag(utbetalingsoppdrag)
         assertEquals(HttpStatus.OK, responseFørsteSending.statusCode)
@@ -94,7 +94,7 @@ internal class OppdragControllerIntegrationTest(
     @Test
     fun `skal kunne resende et oppdrag hvis statusen er funksjonell feil`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE, utbetalingsoppdrag.saksnummer ) } returns true
+        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
         every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
 
         oppdragController.sendOppdrag(utbetalingsoppdrag)
@@ -109,7 +109,7 @@ internal class OppdragControllerIntegrationTest(
     @Test
     fun `sendOppdrag skal returnere 500 dersom toggelen SKRU_PÅ_IVERKSETTELSE er skrudd av`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE, utbetalingsoppdrag.saksnummer ) } returns false
+        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns false
 
         val response = oppdragController.sendOppdrag(utbetalingsoppdrag)
 
