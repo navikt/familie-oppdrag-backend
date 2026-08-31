@@ -132,7 +132,7 @@ class OppdragMQConfig(
     }
 
     @Bean
-    @Profile("never")
+    @Profile("preprod")
     fun jmsTemplateAvstemming(mqQueueConnectionFactory: ConnectionFactory): JmsTemplate =
         JmsTemplate(mqQueueConnectionFactory).apply { defaultDestinationName = avstemmingQueue }
 }

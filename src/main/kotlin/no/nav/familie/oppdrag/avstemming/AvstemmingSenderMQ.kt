@@ -13,7 +13,7 @@ import org.springframework.jms.JmsException
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Service
 
-@Profile("never")
+@Profile("preprod")
 @Service
 class AvstemmingSenderMQ(
     val jmsTemplateAvstemming: JmsTemplate,
