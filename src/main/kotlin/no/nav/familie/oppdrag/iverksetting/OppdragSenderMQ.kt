@@ -10,7 +10,6 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.stereotype.Service
 
 @Service
-@Profile("dev", "preprod")
 class OppdragSenderMQ(
     val jmsTemplateUtgående: JmsTemplate,
     @Value("\${oppdrag.mq.enabled}") val erEnabled: String,
