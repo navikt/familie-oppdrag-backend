@@ -12,10 +12,12 @@ import no.trygdeetaten.skjema.oppdrag.Mmel
 import no.trygdeetaten.skjema.oppdrag.Oppdrag
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Profile("dev", "preprod")
 class OppdragServiceImpl(
     @Autowired private val oppdragSender: OppdragSender,
     @Autowired private val oppdragLagerRepository: OppdragLagerRepository,
