@@ -1,7 +1,6 @@
 package no.nav.familie.oppdrag.config
 
 enum class Integrasjonssystem {
-    TILBAKEKREVING,
     SIMULERING,
 }
 
