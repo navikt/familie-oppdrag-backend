@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Profile("dev", "preprod")
+@Profile("!e2e")
 class OppdragMottaker(
     val oppdragLagerRepository: OppdragLagerRepository,
     val env: Environment,

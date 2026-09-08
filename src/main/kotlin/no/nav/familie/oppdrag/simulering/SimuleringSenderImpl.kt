@@ -6,8 +6,8 @@ import no.nav.system.os.tjenester.simulerfpservice.simulerfpservicegrensesnitt.S
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
-@Profile("!e2e")
 @Service
+@Profile("!dev & !dev_psql_mq")
 class SimuleringSenderImpl(
     private val port: SimulerFpService,
 ) : SimuleringSender {

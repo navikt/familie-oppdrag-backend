@@ -62,7 +62,7 @@ internal class OppdragControllerTest {
 
     @BeforeEach
     fun setUp() {
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE, utbetalingsoppdrag.saksnummer) } returns true
+        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
     }
 
     @Test

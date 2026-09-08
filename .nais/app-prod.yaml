@@ -44,9 +44,20 @@ spec:
         name: familie-oppdrag-17
         autoBackupHour: 2
         diskAutoresize: true
+        highAvailability: true
+        pointInTimeRecovery: true
         databases:
           - name: familie-oppdrag
             envVarPrefix: DB
+        flags:
+          - name: cloudsql.enable_pgaudit
+            value: "on"
+          - name: pgaudit.log
+            value: "write,ddl,role"
+          - name: "pgaudit.log_parameter"
+            value: "on"
+          - name: "pgaudit.log_relation"
+            value: "on"
   azure:
     application:
       enabled: true
@@ -91,4 +102,4 @@ spec:
     - name: JDK_JAVA_OPTIONS
       value: "-XX:MinRAMPercentage=25.0 -XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
     - name: OPPDRAG_MQ_MOTTAK_ENABLED
-      value: "false"
+      value: "true"

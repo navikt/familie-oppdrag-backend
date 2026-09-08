@@ -19,7 +19,6 @@ import no.nav.familie.oppdrag.service.OppdragAlleredeSendtException
 import no.nav.familie.oppdrag.service.OppdragHarAlleredeKvitteringException
 import no.nav.familie.oppdrag.service.OppdragService
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@Profile("dev", "preprod")
 @RestController
 @RequestMapping("/api")
 class OppdragController(
@@ -45,7 +43,7 @@ class OppdragController(
         @Valid @RequestBody
         utbetalingsoppdrag: Utbetalingsoppdrag,
     ): ResponseEntity<Ressurs<String>> {
-        if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE, utbetalingsoppdrag.saksnummer)) {
+        if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE)) {
             return Result
                 .runCatching {
                     val oppdrag110 = oppdragMapper.tilOppdrag110(utbetalingsoppdrag)
@@ -68,14 +66,13 @@ class OppdragController(
         return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
     }
 
-
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], path = ["/oppdragPaaNytt/{versjon}"])
     fun sendOppdragPåNytt(
         @Valid @RequestBody
         utbetalingsoppdrag: Utbetalingsoppdrag,
         @PathVariable versjon: Int,
     ): ResponseEntity<Ressurs<String>> {
-        if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE, utbetalingsoppdrag.saksnummer)) {
+        if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE)) {
             return Result
                 .runCatching {
                     val oppdrag110 = oppdragMapper.tilOppdrag110(utbetalingsoppdrag)
@@ -94,7 +91,6 @@ class OppdragController(
         return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
     }
 
-
     @PostMapping("resend")
     fun resendOppdrag(
         @Valid @RequestBody
@@ -102,7 +98,7 @@ class OppdragController(
     ): ResponseEntity<Ressurs<String>> {
         if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE)) {
             oppdragService.resendOppdrag(oppdragId)
-            return ok("Oppdrag ${oppdragId} sendt på nytt")
+            return ok("Oppdrag $oppdragId sendt på nytt")
         }
         return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
     }
