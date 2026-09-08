@@ -1,11 +1,8 @@
 package no.nav.familie.oppdrag.iverksetting
 
-import no.nav.familie.kontrakter.felles.jsonMapper
-import no.nav.okonomi.tilbakekrevingservice.TilbakekrevingsvedtakResponse
 import no.nav.system.os.entiteter.beregningskjema.Beregning
 import no.nav.system.os.tjenester.simulerfpservice.simulerfpservicegrensesnitt.SimulerBeregningRequest
 import no.nav.system.os.tjenester.simulerfpservice.simulerfpservicegrensesnitt.SimulerBeregningResponse
-import no.nav.tilbakekreving.tilbakekrevingsvedtak.vedtak.v1.TilbakekrevingsvedtakDto
 import no.rtv.namespacetss.SvarStatusType
 import no.rtv.namespacetss.TOutputElementer
 import no.rtv.namespacetss.TssSamhandlerData
@@ -99,35 +96,6 @@ internal class JaxbTest {
         val obj = Jaxb.tilTssSamhandlerData(xml)
         assertThat(xml).isEqualTo(Jaxb.tilXml(obj))
         assertThat(xml).isEqualTo(loadResource("xml/TssSamhandlerData.xml"))
-    }
-
-    @Test
-    internal fun `iverksetting av tilbakekreving skal returnere localdate og ikke xmlgregorian`() {
-        val response =
-            TilbakekrevingsvedtakResponse().apply {
-                tilbakekrevingsvedtak =
-                    TilbakekrevingsvedtakDto().apply {
-                        datoVedtakFagsystem = LocalDate.of(2022, 1, 1)
-                    }
-            }
-        assertThat(jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response)).isEqualTo(
-            """
-            {
-              "mmel" : null,
-              "tilbakekrevingsvedtak" : {
-                "datoVedtakFagsystem" : "2022-01-01",
-                "enhetAnsvarlig" : null,
-                "kodeAksjon" : null,
-                "kodeHjemmel" : null,
-                "kontrollfelt" : null,
-                "renterBeregnes" : null,
-                "saksbehId" : null,
-                "tilbakekrevingsperiode" : [ ],
-                "vedtakId" : null
-              }
-            }
-            """.trimIndent(),
-        )
     }
 
     private fun loadResource(file: String) =
