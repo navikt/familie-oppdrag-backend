@@ -17,4 +17,3 @@ spring:
 OPPDRAG_SERVICE_URL: "https://familie-ws-proxy.dev-fss-pub.nais.io/cics/oppdrag/simulerFpServiceWSBinding"
 SECURITYTOKENSERVICE_URL: https://familie-ws-proxy.dev-fss-pub.nais.io/sts/SecurityTokenServiceProvider/
 WS_PROXY_SCOPE: api://dev-fss.teamfamilie.familie-ws-proxy/.default
-TILBAKEKREVING_V1_URL: https://cics-q1.adeo.no/oppdrag/K231CW80
