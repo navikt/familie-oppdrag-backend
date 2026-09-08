@@ -43,9 +43,8 @@ import kotlin.test.assertEquals
 internal class OppdragControllerIntegrationTest(
     @Autowired private val oppdragService: OppdragService,
     @Autowired private val oppdragMapper: OppdragMapper,
-    @Autowired private  val oppdragLagerRepository: OppdragLagerRepository
+    @Autowired private val oppdragLagerRepository: OppdragLagerRepository,
 ) {
-
     private val featureToggleService = mockk<FeatureToggleService>()
     private val oppdragController = OppdragController(oppdragService, oppdragMapper, featureToggleService)
 
