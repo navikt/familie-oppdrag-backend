@@ -68,7 +68,6 @@ class OppdragController(
         return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
     }
 
-
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], path = ["/oppdragPaaNytt/{versjon}"])
     fun sendOppdragPåNytt(
         @Valid @RequestBody
@@ -94,7 +93,6 @@ class OppdragController(
         return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
     }
 
-
     @PostMapping("resend")
     fun resendOppdrag(
         @Valid @RequestBody
@@ -102,7 +100,7 @@ class OppdragController(
     ): ResponseEntity<Ressurs<String>> {
         if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE)) {
             oppdragService.resendOppdrag(oppdragId)
-            return ok("Oppdrag ${oppdragId} sendt på nytt")
+            return ok("Oppdrag $oppdragId sendt på nytt")
         }
         return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
     }
