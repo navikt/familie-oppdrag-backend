@@ -94,6 +94,7 @@ internal class OppdragControllerIntegrationTest(
     fun `skal kunne resende et oppdrag hvis statusen er funksjonell feil`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
         every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
+
         every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
 
         oppdragController.sendOppdrag(utbetalingsoppdrag)
