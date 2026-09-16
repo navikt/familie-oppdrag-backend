@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.6</version>
+        <version>4.1.1</version>
     </parent>
 
     <properties>
@@ -35,7 +35,7 @@
         <mockk.version>1.14.9</mockk.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <tjenestespesifikasjoner.version>1.0_20260611160851_f0e234f</tjenestespesifikasjoner.version>
-        <springdoc.version>3.0.3</springdoc.version>
+        <springdoc.version>3.1.1</springdoc.version>
 
     </properties>
 
@@ -397,7 +397,7 @@
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>mock-oauth2-server</artifactId>
-            <version>4.0.0</version>
+            <version>6.0.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
