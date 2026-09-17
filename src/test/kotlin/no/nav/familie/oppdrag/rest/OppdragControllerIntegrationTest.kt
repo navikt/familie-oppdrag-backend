@@ -1,12 +1,10 @@
 package no.nav.familie.oppdrag.rest
 
-import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.kontrakter.felles.oppdrag.oppdragId
-import no.nav.familie.oppdrag.featuretoggle.FeatureToggle
 import no.nav.familie.oppdrag.featuretoggle.FeatureToggleService
 import no.nav.familie.oppdrag.iverksetting.OppdragMapper
 import no.nav.familie.oppdrag.repository.OppdragLagerRepository
@@ -46,7 +44,7 @@ internal class OppdragControllerIntegrationTest(
     @Autowired private val oppdragLagerRepository: OppdragLagerRepository,
 ) {
     private val featureToggleService = mockk<FeatureToggleService>()
-    private val oppdragController = OppdragController(oppdragService, oppdragMapper, featureToggleService)
+    private val oppdragController = OppdragController(oppdragService, oppdragMapper)
 
     companion object {
         @Container
@@ -66,7 +64,6 @@ internal class OppdragControllerIntegrationTest(
     @Test
     fun `Test skal lagre oppdrag for utbetalingoppdrag`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
 
         oppdragController.sendOppdrag(utbetalingsoppdrag)
 
@@ -76,7 +73,6 @@ internal class OppdragControllerIntegrationTest(
     @Test
     fun `Test skal returnere https statuscode 409 ved dobbel sending`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
 
         val responseFørsteSending = oppdragController.sendOppdrag(utbetalingsoppdrag)
         assertEquals(HttpStatus.OK, responseFørsteSending.statusCode)
@@ -93,9 +89,6 @@ internal class OppdragControllerIntegrationTest(
     @Test
     fun `skal kunne resende et oppdrag hvis statusen er funksjonell feil`() {
         val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
-
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns true
 
         oppdragController.sendOppdrag(utbetalingsoppdrag)
         assertOppdragStatus(utbetalingsoppdrag.oppdragId, OppdragStatus.KVITTERT_OK)
@@ -104,21 +97,6 @@ internal class OppdragControllerIntegrationTest(
 
         oppdragController.resendOppdrag(utbetalingsoppdrag.oppdragId)
         assertOppdragStatus(utbetalingsoppdrag.oppdragId, OppdragStatus.KVITTERT_OK)
-    }
-
-    @Test
-    fun `sendOppdrag skal returnere 500 dersom toggelen SKRU_PÅ_IVERKSETTELSE er skrudd av`() {
-        val utbetalingsoppdrag = utbetalingsoppdragMedTilfeldigAktoer()
-        every { featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE) } returns false
-
-        val response = oppdragController.sendOppdrag(utbetalingsoppdrag)
-
-        assertThat(response.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
-        assertThat(
-            response.body?.melding,
-        ).isEqualTo(
-            "Iverksettelse er skrudd av for familie-oppdrag-backend",
-        )
     }
 
     private fun assertOppdragStatus(
