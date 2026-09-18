@@ -19,10 +19,10 @@
         <sha1/>
         <changelist>-SNAPSHOT</changelist>
         <jvmTarget>25</jvmTarget>
-        <kotlin.version>2.4.0</kotlin.version>
+        <kotlin.version>2.4.20</kotlin.version>
         <main-class>no.nav.familie.oppdrag.LauncherKt</main-class>
-        <felles.version>4.20260529121328_2754f7c</felles.version>
-	    <kontrakter.version>4.0_20260611084408_a47ed94</kontrakter.version>
+        <felles.version>4.20260818093920_16ad74a</felles.version>
+	    <kontrakter.version>4.0_20260821102510_33ea755</kontrakter.version>
 
         <!--
         denne må oppdateres manuellt då eks `mvn versions:update-properties` henter versjon 2023.
@@ -30,7 +30,7 @@
         -->
         <common-java-modules.version>4.2026.06.09_07.11-eccd6d131c44</common-java-modules.version>
         <jaxb.version>4.0.9</jaxb.version>
-        <cxf.version>4.2.2</cxf.version>
+        <cxf.version>4.2.3</cxf.version>
 
         <mockk.version>1.14.9</mockk.version>
         <testcontainers.version>1.21.4</testcontainers.version>
@@ -45,12 +45,12 @@
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>mockwebserver</artifactId>
-                <version>5.3.2</version>
+                <version>5.5.0</version>
             </dependency>
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
-                <version>5.3.2</version>
+                <version>5.5.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -156,7 +156,7 @@
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>com.ibm.mq.jakarta.client</artifactId>
-            <version>9.4.5.1</version>
+            <version>10.0.0.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.jms</groupId>
@@ -169,7 +169,7 @@
         <dependency>
             <groupId>org.messaginghub</groupId>
             <artifactId>pooled-jms</artifactId>
-            <version>3.2.2</version>
+            <version>3.2.5</version>
         </dependency>
 
 
@@ -181,7 +181,7 @@
         <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
