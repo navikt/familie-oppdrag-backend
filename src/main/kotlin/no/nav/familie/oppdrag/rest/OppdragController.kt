@@ -11,9 +11,6 @@ import no.nav.familie.oppdrag.common.RessursUtils.illegalState
 import no.nav.familie.oppdrag.common.RessursUtils.notFound
 import no.nav.familie.oppdrag.common.RessursUtils.ok
 import no.nav.familie.oppdrag.common.RessursUtils.secureLogger
-import no.nav.familie.oppdrag.common.RessursUtils.serviceUnavailable
-import no.nav.familie.oppdrag.featuretoggle.FeatureToggle
-import no.nav.familie.oppdrag.featuretoggle.FeatureToggleService
 import no.nav.familie.oppdrag.iverksetting.OppdragMapper
 import no.nav.familie.oppdrag.service.OppdragAlleredeSendtException
 import no.nav.familie.oppdrag.service.OppdragHarAlleredeKvitteringException
@@ -34,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController
 class OppdragController(
     private val oppdragService: OppdragService,
     private val oppdragMapper: OppdragMapper,
-    private val featureToggleService: FeatureToggleService,
 ) {
     private val logger = LoggerFactory.getLogger(OppdragController::class.java)
 
@@ -42,65 +38,54 @@ class OppdragController(
     fun sendOppdrag(
         @Valid @RequestBody
         utbetalingsoppdrag: Utbetalingsoppdrag,
-    ): ResponseEntity<Ressurs<String>> {
-        if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE)) {
-            return Result
-                .runCatching {
-                    val oppdrag110 = oppdragMapper.tilOppdrag110(utbetalingsoppdrag)
-                    val oppdrag = oppdragMapper.tilOppdrag(oppdrag110)
+    ): ResponseEntity<Ressurs<String>> =
+        Result
+            .runCatching {
+                val oppdrag110 = oppdragMapper.tilOppdrag110(utbetalingsoppdrag)
+                val oppdrag = oppdragMapper.tilOppdrag(oppdrag110)
 
-                    oppdragService.opprettOppdrag(utbetalingsoppdrag, oppdrag, 0)
-                }.fold(
-                    onFailure = {
-                        if (it is OppdragAlleredeSendtException) {
-                            conflict("Oppdrag er allerede sendt for saksnr ${utbetalingsoppdrag.saksnummer}.")
-                        } else {
-                            illegalState("Klarte ikke sende oppdrag for saksnr ${utbetalingsoppdrag.saksnummer}", it)
-                        }
-                    },
-                    onSuccess = {
-                        ok("Oppdrag sendt OK")
-                    },
-                )
-        }
-        return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
-    }
+                oppdragService.opprettOppdrag(utbetalingsoppdrag, oppdrag, 0)
+            }.fold(
+                onFailure = {
+                    if (it is OppdragAlleredeSendtException) {
+                        conflict("Oppdrag er allerede sendt for saksnr ${utbetalingsoppdrag.saksnummer}.")
+                    } else {
+                        illegalState("Klarte ikke sende oppdrag for saksnr ${utbetalingsoppdrag.saksnummer}", it)
+                    }
+                },
+                onSuccess = {
+                    ok("Oppdrag sendt OK")
+                },
+            )
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], path = ["/oppdragPaaNytt/{versjon}"])
     fun sendOppdragPåNytt(
         @Valid @RequestBody
         utbetalingsoppdrag: Utbetalingsoppdrag,
         @PathVariable versjon: Int,
-    ): ResponseEntity<Ressurs<String>> {
-        if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE)) {
-            return Result
-                .runCatching {
-                    val oppdrag110 = oppdragMapper.tilOppdrag110(utbetalingsoppdrag)
-                    val oppdrag = oppdragMapper.tilOppdrag(oppdrag110)
+    ): ResponseEntity<Ressurs<String>> =
+        Result
+            .runCatching {
+                val oppdrag110 = oppdragMapper.tilOppdrag110(utbetalingsoppdrag)
+                val oppdrag = oppdragMapper.tilOppdrag(oppdrag110)
 
-                    oppdragService.opprettOppdrag(utbetalingsoppdrag, oppdrag, versjon)
-                }.fold(
-                    onFailure = {
-                        illegalState("Klarte ikke sende oppdrag for saksnr ${utbetalingsoppdrag.saksnummer}", it)
-                    },
-                    onSuccess = {
-                        ok("Oppdrag sendt OK")
-                    },
-                )
-        }
-        return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
-    }
+                oppdragService.opprettOppdrag(utbetalingsoppdrag, oppdrag, versjon)
+            }.fold(
+                onFailure = {
+                    illegalState("Klarte ikke sende oppdrag for saksnr ${utbetalingsoppdrag.saksnummer}", it)
+                },
+                onSuccess = {
+                    ok("Oppdrag sendt OK")
+                },
+            )
 
     @PostMapping("resend")
     fun resendOppdrag(
         @Valid @RequestBody
         oppdragId: OppdragId,
     ): ResponseEntity<Ressurs<String>> {
-        if (featureToggleService.isEnabled(FeatureToggle.SKRU_PÅ_IVERKSETTELSE)) {
-            oppdragService.resendOppdrag(oppdragId)
-            return ok("Oppdrag $oppdragId sendt på nytt")
-        }
-        return serviceUnavailable("Iverksettelse er skrudd av for familie-oppdrag-backend")
+        oppdragService.resendOppdrag(oppdragId)
+        return ok("Oppdrag $oppdragId sendt på nytt")
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], path = ["/status"])
@@ -117,9 +102,11 @@ class OppdragController(
                 onSuccess = {
                     if (!listOf(OppdragStatus.KVITTERT_OK, OppdragStatus.LAGT_PÅ_KØ).contains(it.status)) {
                         secureLogger.warn(
-                            "Oppdrag $oppdragId har status ${it.status} og kvitteringsmelding: ${jsonMapper.writeValueAsString(
-                                it.kvitteringsmelding,
-                            )}",
+                            "Oppdrag $oppdragId har status ${it.status} og kvitteringsmelding: ${
+                                jsonMapper.writeValueAsString(
+                                    it.kvitteringsmelding,
+                                )
+                            }",
                         )
                     }
 
