@@ -1,6 +1,5 @@
 package no.nav.familie.oppdrag.repository
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
