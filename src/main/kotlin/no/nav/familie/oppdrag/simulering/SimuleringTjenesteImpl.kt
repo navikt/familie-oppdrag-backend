@@ -1,6 +1,6 @@
 package no.nav.familie.oppdrag.simulering
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.FeilutbetalingerFraSimulering
@@ -37,7 +37,6 @@ class SimuleringTjenesteImpl(
     @Autowired val simulerBeregningRequestMapper: SimulerBeregningRequestMapper,
     @Autowired val simuleringLagerTjeneste: SimuleringLagerTjeneste,
 ) : SimuleringTjeneste {
-    val mapper = jacksonObjectMapper()
     val simuleringResultatTransformer = SimuleringResultatTransformer()
 
     private fun hentSimulerBeregningResponse(
@@ -48,7 +47,7 @@ class SimuleringTjenesteImpl(
             val response = simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest)
             secureLogger.info(
                 "Saksnummer: ${utbetalingsoppdrag.saksnummer} : " +
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response),
+                    jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response),
             )
             return response
         } catch (ex: SimulerBeregningFeilUnderBehandling) {
@@ -68,7 +67,7 @@ class SimuleringTjenesteImpl(
 
         secureLogger.info(
             "Saksnummer: ${utbetalingsoppdrag.saksnummer} : " +
-                mapper.writerWithDefaultPrettyPrinter().writeValueAsString(simulerBeregningRequest),
+                jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(simulerBeregningRequest),
         )
 
         val simuleringsLager = SimuleringLager.lagFraOppdrag(utbetalingsoppdrag, simulerBeregningRequest)
