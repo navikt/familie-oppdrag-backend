@@ -19,7 +19,7 @@ object AvstemmingMapper {
             "EFSP" -> "EF"
             "BA" -> "BA"
             "KS" -> "KS"
-            "IT28" -> "GHGSORMG" //Midlertidig for grunn-og-hjelp til oppdrag har gitt riktig kode
+            "IT28" -> "GH"
             else -> throw Error("$fagområde støttes ikke ennå")
         }
 }
