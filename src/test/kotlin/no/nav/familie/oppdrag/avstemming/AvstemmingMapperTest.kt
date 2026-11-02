@@ -14,7 +14,7 @@ class AvstemmingMapperTest {
         "EFSP, EF",
         "BA, BA",
         "KS, KS",
-        "IT28, GH",
+        "IT28, GHGSORMG",
     )
     fun `skal mappe fagområde til avleverende komponentkode`(
         fagområde: String,
