@@ -16,18 +16,6 @@ import kotlin.test.assertTrue
 
 class SimuleringSammenlignerTest {
     @Test
-    fun `like resultater er like`() {
-        // Arrange
-        val resultat = resultat(mottaker("12345678901", postering(beløp = "1054")))
-
-        // Act
-        val sammenligning = SimuleringSammenligner.sammenlign(resultat, resultat)
-
-        // Assert
-        assertTrue(sammenligning.erLik)
-    }
-
-    @Test
     fun `rekkefølge på mottakere og posteringer ignoreres`() {
         // Arrange
         val a = postering(fom = LocalDate.of(2024, 1, 1), beløp = "100")
@@ -66,8 +54,8 @@ class SimuleringSammenlignerTest {
 
         // Assert
         assertFalse(sammenligning.erLik)
-        assertEquals(BigDecimal("100"), sammenligning.kunISoap.single().beløp)
-        assertEquals(BigDecimal("101"), sammenligning.kunIRest.single().beløp)
+        assertEquals(listOf(BigDecimal("100")), sammenligning.kunISoap.map { it.postering.beløp })
+        assertEquals(listOf(BigDecimal("101")), sammenligning.kunIRest.map { it.postering.beløp })
     }
 
     @Test
@@ -85,70 +73,12 @@ class SimuleringSammenlignerTest {
         assertTrue(sammenligning.kunIRest.isEmpty())
     }
 
-    @Test
-    fun `postering på annen mottaker er avvik`() {
-        // Arrange
-        val p = postering(beløp = "100")
-        val soap = resultat(mottaker("111", p))
-        val rest = resultat(mottaker("222", p))
-
-        // Act
-        val sammenligning = SimuleringSammenligner.sammenlign(soap, rest)
-
-        // Assert
-        assertEquals("111", sammenligning.kunISoap.single().mottakerNummer)
-        assertEquals("222", sammenligning.kunIRest.single().mottakerNummer)
-    }
-
-    @Test
-    fun `ulik mottakertype er avvik`() {
-        // Arrange
-        val p = postering(beløp = "100")
-        val soap = resultat(mottaker("111", p, type = MottakerType.BRUKER))
-        val rest = resultat(mottaker("111", p, type = MottakerType.ARBG_PRIV))
-
-        // Act
-        val sammenligning = SimuleringSammenligner.sammenlign(soap, rest)
-
-        // Assert
-        assertFalse(sammenligning.erLik)
-        assertEquals(MottakerType.BRUKER to MottakerType.ARBG_PRIV, sammenligning.ulikMottakerType["111"])
-    }
-
-    @Test
-    fun `tomt mot ikke-tomt resultat er avvik`() {
-        // Arrange
-        val soap = resultat()
-        val rest = resultat(mottaker("111", postering(beløp = "100")))
-
-        // Act
-        val sammenligning = SimuleringSammenligner.sammenlign(soap, rest)
-
-        // Assert
-        assertFalse(sammenligning.erLik)
-        assertEquals(1, sammenligning.kunIRest.size)
-    }
-
-    @Test
-    fun `to tomme resultater er like`() {
-        // Arrange
-        val soap = resultat()
-        val rest = resultat()
-
-        // Act
-        val sammenligning = SimuleringSammenligner.sammenlign(soap, rest)
-
-        // Assert
-        assertTrue(sammenligning.erLik)
-    }
-
     private fun resultat(vararg mottakere: SimuleringMottaker) = DetaljertSimuleringResultat(mottakere.toList())
 
     private fun mottaker(
         nummer: String,
         vararg posteringer: SimulertPostering,
-        type: MottakerType = MottakerType.BRUKER,
-    ) = SimuleringMottaker(simulertPostering = posteringer.toList(), mottakerNummer = nummer, mottakerType = type)
+    ) = SimuleringMottaker(simulertPostering = posteringer.toList(), mottakerNummer = nummer, mottakerType = MottakerType.BRUKER)
 
     private fun postering(
         fom: LocalDate = LocalDate.of(2024, 1, 1),

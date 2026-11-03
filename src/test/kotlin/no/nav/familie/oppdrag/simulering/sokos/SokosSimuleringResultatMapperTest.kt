@@ -4,10 +4,11 @@ import no.nav.familie.kontrakter.felles.simulering.BetalingType
 import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
 import no.nav.familie.kontrakter.felles.simulering.MottakerType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
+import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
+import no.nav.familie.oppdrag.config.IntegrasjonException
 import no.nav.familie.oppdrag.config.Integrasjonssystem
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.Beregning
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.BeregningStoppnivaa
-import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.BeregningsPeriode
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.Container
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.OperationResponse
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.PeriodeStoppnivaa
@@ -23,78 +24,36 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class SokosSimuleringResultatMapperTest {
-    private val mapper = SokosSimuleringResultatMapper()
     private val utbetalingsoppdrag = lagTestUtbetalingsoppdragForFGBMedEttBarn()
     private val bruker = utbetalingsoppdrag.aktoer
 
     @Test
-    fun `mapper postering med alle felt`() {
+    fun `mapper alle felt, trimmer etterstilte mellomrom og tolker manglende feilkonto som false`() {
         // Arrange
         val respons = respons(stoppnivaa(bruker, detaljer(belop = "1054.00")))
 
         // Act
-        val resultat = mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
+        val mottaker = map(respons).simuleringMottaker.single()
 
         // Assert
-        val mottaker = resultat.simuleringMottaker.single()
         assertEquals(bruker, mottaker.mottakerNummer)
         assertEquals(MottakerType.BRUKER, mottaker.mottakerType)
-
-        val postering = mottaker.simulertPostering.single()
-        assertEquals(FagOmrådeKode.BARNETRYGD, postering.fagOmrådeKode)
-        assertEquals(false, postering.erFeilkonto)
-        assertEquals(LocalDate.of(2024, 1, 1), postering.fom)
-        assertEquals(LocalDate.of(2024, 1, 31), postering.tom)
-        assertEquals(LocalDate.of(2024, 1, 20), postering.forfallsdato)
-        assertEquals(BetalingType.DEBIT, postering.betalingType)
-        assertEquals(BigDecimal("1054.00"), postering.beløp)
-        assertEquals(PosteringType.YTELSE, postering.posteringType)
-        assertEquals("BATR", postering.klassekode)
-        assertEquals("5566", postering.fagsakId)
-        assertFalse(postering.utenInntrekk)
-    }
-
-    @Test
-    fun `trimmer fagområde, klassekode og fagsakId`() {
-        // Arrange
-        val respons =
-            respons(
-                stoppnivaa(bruker, detaljer(belop = "1", klassekode = "BATR  "))
-                    .copy(kodeFagomraade = "BA      ", fagsystemId = "5566   "),
-            )
-
-        // Act
-        val postering =
-            mapper
-                .tilDetaljertSimuleringResultat(
-                    respons,
-                    utbetalingsoppdrag,
-                ).simuleringMottaker
-                .single()
-                .simulertPostering
-                .single()
-
-        // Assert
-        assertEquals(FagOmrådeKode.BARNETRYGD, postering.fagOmrådeKode)
-        assertEquals("BATR", postering.klassekode)
-        assertEquals("5566", postering.fagsakId)
-    }
-
-    @Test
-    fun `negativt eller null beløp gir kredit`() {
-        // Arrange
-        val respons = respons(stoppnivaa(bruker, detaljer(belop = "-100"), detaljer(belop = "0")))
-
-        // Act
-        val posteringer =
-            mapper
-                .tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
-                .simuleringMottaker
-                .single()
-                .simulertPostering
-
-        // Assert
-        assertTrue(posteringer.all { it.betalingType == BetalingType.KREDIT })
+        assertEquals(
+            SimulertPostering(
+                betalingType = BetalingType.DEBIT,
+                erFeilkonto = false,
+                beløp = BigDecimal("1054.00"),
+                fagOmrådeKode = FagOmrådeKode.BARNETRYGD,
+                fom = LocalDate.of(2024, 1, 1),
+                tom = LocalDate.of(2024, 1, 31),
+                forfallsdato = LocalDate.of(2024, 1, 20),
+                posteringType = PosteringType.YTELSE,
+                utenInntrekk = false,
+                klassekode = "BATR",
+                fagsakId = "5566",
+            ),
+            mottaker.simulertPostering.single(),
+        )
     }
 
     @Test
@@ -111,52 +70,26 @@ class SokosSimuleringResultatMapperTest {
             )
 
         // Act
-        val mottakere =
-            mapper
-                .tilDetaljertSimuleringResultat(
-                    respons,
-                    utbetalingsoppdrag,
-                ).simuleringMottaker
-                .associateBy { it.mottakerNummer }
+        val mottakere = map(respons).simuleringMottaker
 
         // Assert
-        assertEquals(3, mottakere.size)
-        assertEquals(MottakerType.BRUKER, mottakere.getValue(bruker).mottakerType)
-        assertEquals(2, mottakere.getValue(bruker).simulertPostering.size)
-        assertEquals(MottakerType.ARBG_ORG, mottakere.getValue(orgnr).mottakerType)
-        assertEquals(MottakerType.ARBG_PRIV, mottakere.getValue(annenPerson).mottakerType)
-    }
-
-    @Test
-    fun `feilkonto som mangler tolkes som false`() {
-        // Arrange
-        val respons = respons(stoppnivaa(bruker, detaljer(belop = "1")).copy(feilkonto = null))
-
-        // Act
-        val postering =
-            mapper
-                .tilDetaljertSimuleringResultat(
-                    respons,
-                    utbetalingsoppdrag,
-                ).simuleringMottaker
-                .single()
-                .simulertPostering
-                .single()
-
-        // Assert
-        assertEquals(false, postering.erFeilkonto)
+        assertEquals(
+            listOf(
+                Triple(bruker, MottakerType.BRUKER, 2),
+                Triple(orgnr, MottakerType.ARBG_ORG, 1),
+                Triple(annenPerson, MottakerType.ARBG_PRIV, 1),
+            ),
+            mottakere.map { Triple(it.mottakerNummer, it.mottakerType, it.simulertPostering.size) },
+        )
     }
 
     @Test
     fun `respons uten beregning gir tomt resultat`() {
         // Arrange
-        val respons =
-            SokosSimulerBeregningResponse(
-                OperationResponse(Container(ResponsSimulering(statusKode = 0, beregning = null))),
-            )
+        val respons = responsSimulering(ResponsSimulering(statusKode = 0, beregning = null))
 
         // Act
-        val resultat = mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
+        val resultat = map(respons)
 
         // Assert
         assertTrue(resultat.simuleringMottaker.isEmpty())
@@ -165,10 +98,10 @@ class SokosSimuleringResultatMapperTest {
     @Test
     fun `respons uten responsSimulering gir feil i stedet for tomt resultat`() {
         // Arrange
-        val respons = SokosSimulerBeregningResponse(OperationResponse(Container(responsSimulering = null)))
+        val respons = responsSimulering(null)
 
         // Act
-        val feil = assertThrows<IllegalStateException> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+        val feil = assertThrows<IllegalStateException> { map(respons) }
 
         // Assert
         assertTrue(feil.message!!.contains("responsSimulering"))
@@ -177,13 +110,10 @@ class SokosSimuleringResultatMapperTest {
     @Test
     fun `respons uten statusKode gir feil i stedet for tomt resultat`() {
         // Arrange
-        val respons =
-            SokosSimulerBeregningResponse(
-                OperationResponse(Container(ResponsSimulering(statusKode = null, beregning = null))),
-            )
+        val respons = responsSimulering(ResponsSimulering(statusKode = null))
 
         // Act
-        val feil = assertThrows<IllegalStateException> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+        val feil = assertThrows<IllegalStateException> { map(respons) }
 
         // Assert
         assertTrue(feil.message!!.contains("statusKode"))
@@ -192,13 +122,10 @@ class SokosSimuleringResultatMapperTest {
     @Test
     fun `statuskode 8 eller høyere gir integrasjonsfeil med statuskode og melding`() {
         // Arrange
-        val respons =
-            SokosSimulerBeregningResponse(
-                OperationResponse(Container(ResponsSimulering(statusKode = 8, statusMelding = "Ugyldig oppdrag"))),
-            )
+        val respons = responsSimulering(ResponsSimulering(statusKode = 8, statusMelding = "Ugyldig oppdrag"))
 
         // Act
-        val feil = assertThrows<SokosSimuleringStatusFeil> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+        val feil = assertThrows<IntegrasjonException> { map(respons) }
 
         // Assert
         assertTrue(feil.message!!.contains("statusKode=8"))
@@ -212,7 +139,7 @@ class SokosSimuleringResultatMapperTest {
         val respons = respons(stoppnivaa(bruker, detaljer(belop = "1")), statusKode = 4)
 
         // Act
-        val resultat = mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
+        val resultat = map(respons)
 
         // Assert
         assertEquals(
@@ -229,54 +156,43 @@ class SokosSimuleringResultatMapperTest {
         val respons = respons(stoppnivaa(bruker, detaljer(belop = "1")).copy(datoForfall = null))
 
         // Act
-        val feil = assertThrows<IllegalStateException> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+        val feil = assertThrows<IllegalStateException> { map(respons) }
 
         // Assert
         assertTrue(feil.message!!.contains("datoForfall"))
         assertFalse(feil.message!!.contains(bruker))
     }
 
+    private fun map(respons: SokosSimulerBeregningResponse) =
+        SokosSimuleringResultatMapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
+
+    private fun responsSimulering(responsSimulering: ResponsSimulering?) =
+        SokosSimulerBeregningResponse(OperationResponse(Container(responsSimulering)))
+
     private fun respons(
         vararg stoppnivaaer: BeregningStoppnivaa,
         statusKode: Int = 0,
-    ) = SokosSimulerBeregningResponse(
-        OperationResponse(
-            Container(
-                ResponsSimulering(
-                    statusKode = statusKode,
-                    beregning =
-                        Beregning(
-                            gjelderId = bruker,
-                            periodeStoppnivaa =
-                                stoppnivaaer.map {
-                                    PeriodeStoppnivaa(BeregningsPeriode("2024-01-01", "2024-01-31"), it)
-                                },
-                        ),
-                ),
-            ),
-        ),
-    )
+    ) = responsSimulering(ResponsSimulering(statusKode, beregning = Beregning(stoppnivaaer.map { PeriodeStoppnivaa(it) })))
 
+    // Etterstilte mellomrom og manglende feilkonto, slik Oppdrag kan svare.
     private fun stoppnivaa(
         utbetalesTilId: String,
         vararg detaljer: StoppnivaaDetaljer,
     ) = BeregningStoppnivaa(
-        kodeFagomraade = "BA",
-        fagsystemId = "5566",
+        kodeFagomraade = "BA      ",
+        fagsystemId = "5566   ",
         utbetalesTilId = utbetalesTilId,
         datoForfall = "2024-01-20",
-        feilkonto = false,
+        feilkonto = null,
         stoppnivaaDetaljer = detaljer.toList(),
     )
 
-    private fun detaljer(
-        belop: String,
-        klassekode: String = "BATR",
-    ) = StoppnivaaDetaljer(
-        faktiskFom = "2024-01-01",
-        faktiskTom = "2024-01-31",
-        belop = BigDecimal(belop),
-        klassekode = klassekode,
-        typeKlasse = "YTEL",
-    )
+    private fun detaljer(belop: String) =
+        StoppnivaaDetaljer(
+            faktiskFom = "2024-01-01",
+            faktiskTom = "2024-01-31",
+            belop = BigDecimal(belop),
+            klassekode = "BATR  ",
+            typeKlasse = "YTEL",
+        )
 }

@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.simulering
 
+import io.micrometer.core.instrument.Metrics
 import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.context.annotation.ApplicationScope
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.util.function.Supplier
 
 @Service
 @ApplicationScope
@@ -47,9 +49,9 @@ class SimuleringTjenesteImpl(
     ): SimulerBeregningResponse {
         try {
             val response =
-                SimuleringMetrikker.tidta(METRIKK_SOAP_TID, utbetalingsoppdrag.fagSystem) {
-                    simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest)
-                }
+                Metrics
+                    .timer("simulering.soap.tid", "fagsystem", utbetalingsoppdrag.fagSystem)
+                    .record(Supplier { simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest) })
             secureLogger.info(
                 "Saksnummer: ${utbetalingsoppdrag.saksnummer} : " +
                     jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response),
@@ -83,19 +85,10 @@ class SimuleringTjenesteImpl(
         simuleringsLager.responseXml = Jaxb.tilXml(respons)
         simuleringLagerTjeneste.oppdater(simuleringsLager)
 
-        val beregning = respons.response?.simulering
         val resultat =
-            if (beregning == null) {
-                DetaljertSimuleringResultat(emptyList())
-            } else {
-                simuleringResultatTransformer.mapSimulering(
-                    beregning = beregning,
-                    utbetalingsoppdrag = utbetalingsoppdrag,
-                )
-            }
-
+            respons.response?.simulering?.let { simuleringResultatTransformer.mapSimulering(it, utbetalingsoppdrag) }
+                ?: DetaljertSimuleringResultat(emptyList())
         sokosSimuleringSkyggekjører.skyggekjør(utbetalingsoppdrag, resultat)
-
         return resultat
     }
 
@@ -200,8 +193,6 @@ class SimuleringTjenesteImpl(
         }
 
     companion object {
-        private const val METRIKK_SOAP_TID = "simulering.soap.tid"
-
         val secureLogger: Logger = LoggerFactory.getLogger("secureLogger")
     }
 }

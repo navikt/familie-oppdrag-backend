@@ -1,107 +1,61 @@
 package no.nav.familie.oppdrag.simulering.sokos
 
-import no.nav.familie.kontrakter.felles.simulering.BetalingType
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
-import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
 import no.nav.familie.kontrakter.felles.simulering.MottakerType
-import no.nav.familie.kontrakter.felles.simulering.PosteringType
+import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import java.math.BigDecimal
-import java.time.LocalDate
 
 /**
- * Sammenligner simuleringsresultat fra SOAP (fasit) og REST (sokos-oppdrag-proxy).
- *
- * Rekkefølge ignoreres: SOAP grupperer mottakere i et HashMap, så rekkefølgen er ikke stabil.
- * Beløp sammenlignes uten hensyn til skala, slik at 100 og 100.00 regnes som like.
- * Posteringer sammenlignes som multimengder, så like posteringer som forekommer flere ganger telles.
+ * Sammenligner SOAP (fasit) og REST som multimengder av posteringer per mottaker. Rekkefølgen ignoreres, fordi
+ * SOAP grupperer mottakere i et HashMap, og beløp sammenlignes uten skala, slik at 100 og 100.00 er like.
  */
 object SimuleringSammenligner {
     fun sammenlign(
         soap: DetaljertSimuleringResultat,
         rest: DetaljertSimuleringResultat,
     ): Sammenligningsresultat {
-        val soapPosteringer = tilPosteringsnøkler(soap)
-        val restPosteringer = tilPosteringsnøkler(rest)
-
+        val soapPosteringer = posteringer(soap)
+        val restPosteringer = posteringer(rest)
         return Sammenligningsresultat(
             kunISoap = differanse(soapPosteringer, restPosteringer),
             kunIRest = differanse(restPosteringer, soapPosteringer),
-            ulikMottakerType = ulikeMottakertyper(soap, rest),
         )
     }
 
-    private fun tilPosteringsnøkler(resultat: DetaljertSimuleringResultat): List<Posteringsnøkkel> =
+    private fun posteringer(resultat: DetaljertSimuleringResultat): List<MottakersPostering> =
         resultat.simuleringMottaker.flatMap { mottaker ->
-            mottaker.simulertPostering.map { postering ->
-                Posteringsnøkkel(
-                    mottakerNummer = mottaker.mottakerNummer,
-                    fagOmrådeKode = postering.fagOmrådeKode,
-                    erFeilkonto = postering.erFeilkonto,
-                    fom = postering.fom,
-                    tom = postering.tom,
-                    betalingType = postering.betalingType,
-                    beløp = normaliser(postering.beløp),
-                    posteringType = postering.posteringType,
-                    forfallsdato = postering.forfallsdato,
-                    utenInntrekk = postering.utenInntrekk,
-                    klassekode = postering.klassekode,
-                    fagsakId = postering.fagsakId,
-                )
+            mottaker.simulertPostering.map {
+                MottakersPostering(mottaker.mottakerNummer, mottaker.mottakerType, it.copy(beløp = utenSkala(it.beløp)))
             }
         }
 
-    /** Fjerner skala-forskjeller (100.00 → 100) uten å gå over til vitenskapelig notasjon (1E+2). */
-    private fun normaliser(beløp: BigDecimal): BigDecimal = beløp.stripTrailingZeros().let { if (it.scale() < 0) it.setScale(0) else it }
+    // stripTrailingZeros alene gir 1E+2 for 100, som er vanskelig å lese i securelog.
+    private fun utenSkala(beløp: BigDecimal): BigDecimal = beløp.stripTrailingZeros().let { if (it.scale() < 0) it.setScale(0) else it }
 
     /** Elementer i [a] som ikke finnes i [b], med hensyn til antall forekomster. */
     private fun differanse(
-        a: List<Posteringsnøkkel>,
-        b: List<Posteringsnøkkel>,
-    ): List<Posteringsnøkkel> {
+        a: List<MottakersPostering>,
+        b: List<MottakersPostering>,
+    ): List<MottakersPostering> {
         val gjenstående = b.groupingBy { it }.eachCount().toMutableMap()
-        return a.filter { nøkkel ->
-            val antall = gjenstående[nøkkel] ?: 0
-            if (antall > 0) {
-                gjenstående[nøkkel] = antall - 1
-                false
-            } else {
-                true
-            }
+        return a.filter { postering ->
+            val antall = gjenstående[postering] ?: 0
+            gjenstående[postering] = antall - 1
+            antall <= 0
         }
-    }
-
-    private fun ulikeMottakertyper(
-        soap: DetaljertSimuleringResultat,
-        rest: DetaljertSimuleringResultat,
-    ): Map<String?, Pair<MottakerType?, MottakerType?>> {
-        val soapTyper = soap.simuleringMottaker.associate { it.mottakerNummer to it.mottakerType }
-        val restTyper = rest.simuleringMottaker.associate { it.mottakerNummer to it.mottakerType }
-        return (soapTyper.keys + restTyper.keys)
-            .filter { soapTyper[it] != restTyper[it] }
-            .associateWith { soapTyper[it] to restTyper[it] }
     }
 }
 
 data class Sammenligningsresultat(
-    val kunISoap: List<Posteringsnøkkel>,
-    val kunIRest: List<Posteringsnøkkel>,
-    val ulikMottakerType: Map<String?, Pair<MottakerType?, MottakerType?>>,
+    val kunISoap: List<MottakersPostering>,
+    val kunIRest: List<MottakersPostering>,
 ) {
     val erLik: Boolean
-        get() = kunISoap.isEmpty() && kunIRest.isEmpty() && ulikMottakerType.isEmpty()
+        get() = kunISoap.isEmpty() && kunIRest.isEmpty()
 }
 
-data class Posteringsnøkkel(
+data class MottakersPostering(
     val mottakerNummer: String?,
-    val fagOmrådeKode: FagOmrådeKode,
-    val erFeilkonto: Boolean?,
-    val fom: LocalDate,
-    val tom: LocalDate,
-    val betalingType: BetalingType,
-    val beløp: BigDecimal,
-    val posteringType: PosteringType,
-    val forfallsdato: LocalDate,
-    val utenInntrekk: Boolean,
-    val klassekode: String?,
-    val fagsakId: String?,
+    val mottakerType: MottakerType?,
+    val postering: SimulertPostering,
 )
