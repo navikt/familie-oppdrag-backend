@@ -14,10 +14,6 @@ import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.Ber
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.StoppnivaaDetaljer
 import org.springframework.stereotype.Component
 
-/**
- * REST-varianten av [no.nav.familie.oppdrag.simulering.SimuleringResultatTransformer.mapSimulering].
- * Mottakertype, betalingstype, orgnr og datoer håndteres i [no.nav.familie.oppdrag.simulering.SimuleringUtil], felles med SOAP.
- */
 @Component
 class SokosSimuleringResultatMapper {
     fun tilDetaljertSimuleringResultat(
@@ -66,7 +62,6 @@ class SokosSimuleringResultatMapper {
             betalingType = utledBetalingType(beløp),
             erFeilkonto = stoppnivaa.feilkonto ?: false,
             beløp = beløp,
-            // trim() som i SOAP-transformeren, jf. TOB-1509.
             fagOmrådeKode = FagOmrådeKode.fraKode(påkrevd(stoppnivaa.kodeFagomraade, "kodeFagomraade").trim()),
             fom = parseDato(påkrevd(detaljer.faktiskFom, "faktiskFom")),
             tom = parseDato(påkrevd(detaljer.faktiskTom, "faktiskTom")),
@@ -78,7 +73,6 @@ class SokosSimuleringResultatMapper {
         )
     }
 
-    // Feltnavnet logges, aldri verdien, siden flere felt inneholder fnr/orgnr.
     private fun <T> påkrevd(
         verdi: T?,
         felt: String,

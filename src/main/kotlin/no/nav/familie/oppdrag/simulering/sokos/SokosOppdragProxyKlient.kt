@@ -9,7 +9,6 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import java.net.URI
 
-// Går mot sokos-oppdrag-proxy, REST-grensesnittet for simulering mot Oppdragssystemet (OS).
 @Service
 class SokosOppdragProxyKlient(
     @Value("\${SOKOS_OPPDRAG_PROXY_URL}")

@@ -14,6 +14,7 @@ import no.nav.familie.oppdrag.config.Integrasjonssystem
 import no.nav.familie.oppdrag.iverksetting.Jaxb
 import no.nav.familie.oppdrag.repository.SimuleringLager
 import no.nav.familie.oppdrag.repository.SimuleringLagerTjeneste
+import no.nav.familie.oppdrag.simulering.sokos.SokosSimuleringSkyggekjører
 import no.nav.system.os.entiteter.beregningskjema.Beregning
 import no.nav.system.os.entiteter.beregningskjema.BeregningStoppnivaaDetaljer
 import no.nav.system.os.entiteter.beregningskjema.BeregningsPeriode
@@ -36,6 +37,7 @@ class SimuleringTjenesteImpl(
     @Autowired val simuleringSender: SimuleringSender,
     @Autowired val simulerBeregningRequestMapper: SimulerBeregningRequestMapper,
     @Autowired val simuleringLagerTjeneste: SimuleringLagerTjeneste,
+    @Autowired val sokosSimuleringSkyggekjører: SokosSimuleringSkyggekjører,
 ) : SimuleringTjeneste {
     val simuleringResultatTransformer = SimuleringResultatTransformer()
 
@@ -78,11 +80,20 @@ class SimuleringTjenesteImpl(
         simuleringsLager.responseXml = Jaxb.tilXml(respons)
         simuleringLagerTjeneste.oppdater(simuleringsLager)
 
-        val beregning = respons.response?.simulering ?: return DetaljertSimuleringResultat(emptyList())
-        return simuleringResultatTransformer.mapSimulering(
-            beregning = beregning,
-            utbetalingsoppdrag = utbetalingsoppdrag,
-        )
+        val beregning = respons.response?.simulering
+        val resultat =
+            if (beregning == null) {
+                DetaljertSimuleringResultat(emptyList())
+            } else {
+                simuleringResultatTransformer.mapSimulering(
+                    beregning = beregning,
+                    utbetalingsoppdrag = utbetalingsoppdrag,
+                )
+            }
+
+        sokosSimuleringSkyggekjører.skyggekjør(utbetalingsoppdrag, resultat)
+
+        return resultat
     }
 
     override fun hentFeilutbetalinger(request: HentFeilutbetalingerFraSimuleringRequest): FeilutbetalingerFraSimulering {

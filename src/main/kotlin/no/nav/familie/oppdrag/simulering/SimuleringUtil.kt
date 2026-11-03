@@ -6,10 +6,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-/**
- * Felles hjelpefunksjoner for mapping av simuleringsresultat fra Oppdragssystemet,
- * uavhengig av om svaret kommer via SOAP eller REST (sokos-oppdrag-proxy).
- */
 object SimuleringUtil {
     private val DATO_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 

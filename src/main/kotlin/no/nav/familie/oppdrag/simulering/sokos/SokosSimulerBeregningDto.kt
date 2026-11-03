@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 
-// DTO-er for POST /api/osSimulerBeregningApi/simulerBeregning i sokos-oppdrag-proxy.
-// Speiler Swagger-definisjonen (z/OS Connect). Datoer er strenger på formatet yyyy-MM-dd.
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SokosSimulerBeregningRequest(
     @JsonProperty("OsSimulerBeregningOperation")

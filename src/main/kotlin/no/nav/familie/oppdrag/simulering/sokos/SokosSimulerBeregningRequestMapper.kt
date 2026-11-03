@@ -17,10 +17,6 @@ import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.Oppd
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.RequestSimulering
 import org.springframework.stereotype.Component
 
-/**
- * REST-varianten av [no.nav.familie.oppdrag.simulering.SimulerBeregningRequestMapper].
- * Feltene settes likt som i SOAP-mapperen, slik at skyggekjøringen sender samme input til begge grensesnittene.
- */
 @Component
 class SokosSimulerBeregningRequestMapper {
     fun tilSokosSimulerBeregningRequest(utbetalingsoppdrag: Utbetalingsoppdrag): SokosSimulerBeregningRequest =
@@ -77,7 +73,7 @@ class SokosSimulerBeregningRequestMapper {
             datoVedtakTom = utbetalingsperiode.vedtakdatoTom.toString(),
             sats = utbetalingsperiode.sats,
             typeSats = SatsTypeKode.fromKode(utbetalingsperiode.satsType.name).kode,
-            brukKjoreplan = OppdragSkjemaConstants.BRUK_KJØREPLAN_DEFAULT == "J",
+            brukKjoreplan = false,
             saksbehId = utbetalingsoppdrag.saksbehandlerId,
             utbetalesTilId = utbetalingsperiode.utbetalesTil,
             henvisning = utbetalingsperiode.behandlingId.toString(),
