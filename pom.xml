@@ -22,7 +22,7 @@
         <kotlin.version>2.4.0</kotlin.version>
         <main-class>no.nav.familie.oppdrag.LauncherKt</main-class>
         <felles.version>4.20260529121328_2754f7c</felles.version>
-	    <kontrakter.version>4.0_20260611084408_a47ed94</kontrakter.version>
+	    <kontrakter.version>4.0_20261103010628_56d7455</kontrakter.version>
 
         <!--
         denne må oppdateres manuellt då eks `mvn versions:update-properties` henter versjon 2023.
