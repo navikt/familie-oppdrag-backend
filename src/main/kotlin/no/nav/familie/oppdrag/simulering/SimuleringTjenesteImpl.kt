@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.context.annotation.ApplicationScope
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.util.function.Supplier
 
 @Service
 @ApplicationScope
@@ -51,7 +50,7 @@ class SimuleringTjenesteImpl(
             val response =
                 Metrics
                     .timer("simulering.soap.tid", "fagsystem", utbetalingsoppdrag.fagSystem)
-                    .record(Supplier { simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest) })
+                    .record<SimulerBeregningResponse> { simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest) }
             secureLogger.info(
                 "Saksnummer: ${utbetalingsoppdrag.saksnummer} : " +
                     jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response),

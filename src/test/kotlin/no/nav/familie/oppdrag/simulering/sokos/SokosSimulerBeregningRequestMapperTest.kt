@@ -16,22 +16,18 @@ import kotlin.test.assertEquals
 
 class SokosSimulerBeregningRequestMapperTest {
     @Test
-    fun `ny periode med opphør, referanse til forrige periode og utbetalingsgrad mappes likt som SOAP`() {
+    fun `ny periode med opphør, referanse og utbetalingsgrad og endring på eksisterende periode mappes likt som SOAP`() {
         // Arrange
+        val mal = lagTestUtbetalingsoppdragForFGBMedEttBarn()
+        val periode = mal.utbetalingsperiode.single()
         val utbetalingsoppdrag =
-            oppdragMedPeriode(erEndring = false, opphør = Opphør(LocalDate.of(2024, 3, 1)), forrigePeriodeId = 1, utbetalingsgrad = 50)
-
-        // Act
-        val rest = SokosSimulerBeregningRequestMapper.tilSokosSimulerBeregningRequest(utbetalingsoppdrag)
-
-        // Assert
-        assertEquals(forventetFraSoap(utbetalingsoppdrag), rest.operation.container.requestSimulering)
-    }
-
-    @Test
-    fun `endring på eksisterende periode mappes likt som SOAP uten referanse til forrige periode`() {
-        // Arrange
-        val utbetalingsoppdrag = oppdragMedPeriode(erEndring = true, opphør = null, forrigePeriodeId = 1, utbetalingsgrad = null)
+            mal.copy(
+                utbetalingsperiode =
+                    listOf(
+                        periode.copy(periodeId = 2, forrigePeriodeId = 1, opphør = Opphør(LocalDate.of(2024, 3, 1)), utbetalingsgrad = 50),
+                        periode.copy(periodeId = 3, forrigePeriodeId = 2, erEndringPåEksisterendePeriode = true),
+                    ),
+            )
 
         // Act
         val rest = SokosSimulerBeregningRequestMapper.tilSokosSimulerBeregningRequest(utbetalingsoppdrag)
@@ -80,23 +76,5 @@ class SokosSimulerBeregningRequestMapperTest {
                     )
                 },
         )
-    }
-
-    private fun oppdragMedPeriode(
-        erEndring: Boolean,
-        opphør: Opphør?,
-        forrigePeriodeId: Long?,
-        utbetalingsgrad: Int?,
-    ): Utbetalingsoppdrag {
-        val mal = lagTestUtbetalingsoppdragForFGBMedEttBarn()
-        val periode =
-            mal.utbetalingsperiode.single().copy(
-                erEndringPåEksisterendePeriode = erEndring,
-                opphør = opphør,
-                periodeId = 2,
-                forrigePeriodeId = forrigePeriodeId,
-                utbetalingsgrad = utbetalingsgrad,
-            )
-        return mal.copy(utbetalingsperiode = listOf(periode))
     }
 }

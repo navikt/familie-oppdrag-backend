@@ -42,14 +42,12 @@ class SokosOppdragProxyKlientTest {
     companion object {
         private val RESPONS =
             """
-            {"OsSimulerBeregningOperationResponse": {"ZS1OCont": {"responsSimulering": {
-              "statusKode": 0, "statusMelding": null, "ukjentFelt": "tåles",
-              "beregning": {"gjelderId": "12345678901", "periodeStoppnivaa": [
+            {"OsSimulerBeregningOperationResponse": {"ZS1OCont": {"responsSimulering": {"statusKode": 0, "ukjentFelt": "tåles",
+              "beregning": {"periodeStoppnivaa": [
                 {"beregningStoppnivaa": {"kodeFagomraade": "BA", "fagsystemId": "5566", "utbetalesTilId": "12345678901",
-                  "datoForfall": "2024-01-20", "feilkonto": false, "stoppnivaaDetaljer": [{"faktiskFom": "2024-01-01",
-                  "faktiskTom": "2024-01-31", "belop": 1054.00, "klassekode": "BATR", "typeKlasse": "YTEL", "kontoStreng": null}]}},
-                {"beregningStoppnivaa": {"kodeFagomraade": "BA", "fagsystemId": "5566", "utbetalesTilId": "12345678901",
-                  "datoForfall": "2024-02-20", "feilkonto": false, "stoppnivaaDetaljer": null}}
+                  "datoForfall": "2024-01-20", "stoppnivaaDetaljer": [{"faktiskFom": "2024-01-01", "faktiskTom": "2024-01-31",
+                  "belop": 1054.00, "typeKlasse": "YTEL"}]}},
+                {"beregningStoppnivaa": {"utbetalesTilId": "12345678901", "stoppnivaaDetaljer": null}}
               ]}
             }}}}
             """.trimIndent()

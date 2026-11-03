@@ -13,18 +13,15 @@ class SokosOppdragProxyKlient(
     @Value("\${SOKOS_OPPDRAG_PROXY_URL}") private val sokosOppdragProxyUrl: String,
     @Qualifier("sokosOppdragProxyRestClient") private val restClient: RestClient,
 ) {
-    fun simulerBeregning(request: SokosSimulerBeregningRequest): SokosSimulerBeregningResponse {
-        val respons =
-            try {
-                restClient
-                    .post()
-                    .uri("$sokosOppdragProxyUrl/api/osSimulerBeregningApi/simulerBeregning")
-                    .body(request)
-                    .retrieve()
-                    .body<SokosSimulerBeregningResponse>()
-            } catch (e: Exception) {
-                throw IntegrasjonException(Integrasjonssystem.SIMULERING, "Feil ved kall mot sokos-oppdrag-proxy", e)
-            }
-        return respons ?: throw IntegrasjonException(Integrasjonssystem.SIMULERING, "Tomt svar fra sokos-oppdrag-proxy")
-    }
+    fun simulerBeregning(request: SokosSimulerBeregningRequest): SokosSimulerBeregningResponse =
+        try {
+            restClient
+                .post()
+                .uri("$sokosOppdragProxyUrl/api/osSimulerBeregningApi/simulerBeregning")
+                .body(request)
+                .retrieve()
+                .body<SokosSimulerBeregningResponse>() ?: error("Tomt svar fra sokos-oppdrag-proxy")
+        } catch (e: Exception) {
+            throw IntegrasjonException(Integrasjonssystem.SIMULERING, "Feil ved kall mot sokos-oppdrag-proxy", e)
+        }
 }

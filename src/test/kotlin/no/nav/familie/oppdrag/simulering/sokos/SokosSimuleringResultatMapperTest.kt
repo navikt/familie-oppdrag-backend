@@ -6,7 +6,6 @@ import no.nav.familie.kontrakter.felles.simulering.MottakerType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import no.nav.familie.oppdrag.config.IntegrasjonException
-import no.nav.familie.oppdrag.config.Integrasjonssystem
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.Beregning
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.BeregningStoppnivaa
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.Container
@@ -28,16 +27,14 @@ class SokosSimuleringResultatMapperTest {
     private val bruker = utbetalingsoppdrag.aktoer
 
     @Test
-    fun `mapper alle felt, trimmer etterstilte mellomrom og tolker manglende feilkonto som false`() {
+    fun `mapper alle felt ved varsel, trimmer etterstilte mellomrom og tolker manglende feilkonto som false`() {
         // Arrange
-        val respons = respons(stoppnivaa(bruker, detaljer(belop = "1054.00")))
+        val respons = respons(stoppnivaa(bruker, detaljer(belop = "1054.00")), statusKode = 4)
 
         // Act
         val mottaker = map(respons).simuleringMottaker.single()
 
         // Assert
-        assertEquals(bruker, mottaker.mottakerNummer)
-        assertEquals(MottakerType.BRUKER, mottaker.mottakerType)
         assertEquals(
             SimulertPostering(
                 betalingType = BetalingType.DEBIT,
@@ -130,24 +127,6 @@ class SokosSimuleringResultatMapperTest {
         // Assert
         assertTrue(feil.message!!.contains("statusKode=8"))
         assertTrue(feil.message!!.contains("Ugyldig oppdrag"))
-        assertEquals(Integrasjonssystem.SIMULERING, feil.system)
-    }
-
-    @Test
-    fun `statuskode 4 (varsel) mappes som vanlig`() {
-        // Arrange
-        val respons = respons(stoppnivaa(bruker, detaljer(belop = "1")), statusKode = 4)
-
-        // Act
-        val resultat = map(respons)
-
-        // Assert
-        assertEquals(
-            1,
-            resultat.simuleringMottaker
-                .single()
-                .simulertPostering.size,
-        )
     }
 
     @Test

@@ -14,7 +14,6 @@ import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import java.util.function.Supplier
 
 /**
  * Kjører simuleringen også mot sokos-oppdrag-proxy (REST) og sammenligner med SOAP, som er fasit og eneste svar.
@@ -35,22 +34,18 @@ class SokosSimuleringSkyggekjører(
         soapResultat: DetaljertSimuleringResultat,
     ) {
         try {
-            if (!featureToggleService.isEnabled(FeatureToggle.SKYGGEKJØR_SOKOS_SIMULERING, utbetalingsoppdrag.saksnummer)) {
-                return
-            }
+            if (!featureToggleService.isEnabled(FeatureToggle.SKYGGEKJØR_SOKOS_SIMULERING, utbetalingsoppdrag.saksnummer)) return
             val mdc = MDC.getCopyOfContextMap()
             executor.execute {
-                mdc?.let { MDC.setContextMap(it) }
-                try {
-                    simulerOgSammenlign(utbetalingsoppdrag, soapResultat)
-                } finally {
-                    MDC.clear()
-                }
+                MDC.setContextMap(mdc ?: emptyMap())
+                simulerOgSammenlign(utbetalingsoppdrag, soapResultat)
             }
+        } catch (e: RejectedExecutionException) {
+            tell("forkastet", utbetalingsoppdrag)
+            logger.warn("Skyggesimulering forkastet, køen er full. ${logginfo(utbetalingsoppdrag)}")
         } catch (e: Exception) {
-            val utfall = if (e is RejectedExecutionException) "forkastet" else "feil"
-            tell(utfall, utbetalingsoppdrag)
-            logger.warn("Skyggesimulering ikke startet ($utfall). ${logginfo(utbetalingsoppdrag)}", e)
+            tell("feil", utbetalingsoppdrag)
+            logger.warn("Skyggesimulering ikke startet. ${logginfo(utbetalingsoppdrag)}", e)
         }
     }
 
@@ -63,7 +58,7 @@ class SokosSimuleringSkyggekjører(
             val respons =
                 Metrics
                     .timer("simulering.skyggekjoring.tid", "fagsystem", utbetalingsoppdrag.fagSystem)
-                    .record(Supplier { sokosOppdragProxyKlient.simulerBeregning(request) })
+                    .record<SokosSimulerBeregningResponse> { sokosOppdragProxyKlient.simulerBeregning(request) }
             val restResultat = SokosSimuleringResultatMapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
 
             val sammenligning = SimuleringSammenligner.sammenlign(soap = soapResultat, rest = restResultat)
