@@ -20,12 +20,21 @@ class SokosSimuleringResultatMapper {
         respons: SokosSimulerBeregningResponse,
         utbetalingsoppdrag: Utbetalingsoppdrag,
     ): DetaljertSimuleringResultat {
-        val beregning =
+        val responsSimulering =
             respons.operationResponse
                 ?.container
                 ?.responsSimulering
-                ?.beregning
                 ?: return DetaljertSimuleringResultat(emptyList())
+
+        val statusKode = responsSimulering.statusKode
+        if (statusKode != null && statusKode >= STATUSKODE_FEIL) {
+            throw IllegalStateException(
+                "Simulering mot sokos-oppdrag-proxy feilet med statusKode=$statusKode " +
+                    "statusMelding=${responsSimulering.statusMelding}",
+            )
+        }
+
+        val beregning = responsSimulering.beregning ?: return DetaljertSimuleringResultat(emptyList())
 
         val posteringerPerMottaker = linkedMapOf<String, MutableList<SimulertPostering>>()
         beregning.periodeStoppnivaa
@@ -77,4 +86,9 @@ class SokosSimuleringResultatMapper {
         verdi: T?,
         felt: String,
     ): T = verdi ?: throw IllegalStateException("Mangler $felt i simuleringsrespons fra sokos-oppdrag-proxy")
+
+    companion object {
+        // Oppdrag bruker alvorlighetsgrad 00 (OK), 04 (varsel), 08 (funksjonell feil) og 12 (teknisk feil).
+        private const val STATUSKODE_FEIL = 8
+    }
 }

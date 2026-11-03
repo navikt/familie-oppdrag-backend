@@ -166,6 +166,39 @@ class SokosSimuleringResultatMapperTest {
     }
 
     @Test
+    fun `statuskode 8 eller høyere gir feil med statuskode og melding`() {
+        // Arrange
+        val respons =
+            SokosSimulerBeregningResponse(
+                OperationResponse(Container(ResponsSimulering(statusKode = 8, statusMelding = "Ugyldig oppdrag"))),
+            )
+
+        // Act
+        val feil = assertThrows<IllegalStateException> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+
+        // Assert
+        assertTrue(feil.message!!.contains("statusKode=8"))
+        assertTrue(feil.message!!.contains("Ugyldig oppdrag"))
+    }
+
+    @Test
+    fun `statuskode 4 (varsel) mappes som vanlig`() {
+        // Arrange
+        val respons = respons(stoppnivaa(bruker, detaljer(belop = "1")), statusKode = 4)
+
+        // Act
+        val resultat = mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
+
+        // Assert
+        assertEquals(
+            1,
+            resultat.simuleringMottaker
+                .single()
+                .simulertPostering.size,
+        )
+    }
+
+    @Test
     fun `påkrevd felt som mangler gir feil med feltnavn og uten verdi`() {
         // Arrange
         val respons = respons(stoppnivaa(bruker, detaljer(belop = "1")).copy(datoForfall = null))
@@ -178,24 +211,26 @@ class SokosSimuleringResultatMapperTest {
         assertFalse(feil.message!!.contains(bruker))
     }
 
-    private fun respons(vararg stoppnivaaer: BeregningStoppnivaa) =
-        SokosSimulerBeregningResponse(
-            OperationResponse(
-                Container(
-                    ResponsSimulering(
-                        statusKode = 0,
-                        beregning =
-                            Beregning(
-                                gjelderId = bruker,
-                                periodeStoppnivaa =
-                                    stoppnivaaer.map {
-                                        PeriodeStoppnivaa(BeregningsPeriode("2024-01-01", "2024-01-31"), it)
-                                    },
-                            ),
-                    ),
+    private fun respons(
+        vararg stoppnivaaer: BeregningStoppnivaa,
+        statusKode: Int = 0,
+    ) = SokosSimulerBeregningResponse(
+        OperationResponse(
+            Container(
+                ResponsSimulering(
+                    statusKode = statusKode,
+                    beregning =
+                        Beregning(
+                            gjelderId = bruker,
+                            periodeStoppnivaa =
+                                stoppnivaaer.map {
+                                    PeriodeStoppnivaa(BeregningsPeriode("2024-01-01", "2024-01-31"), it)
+                                },
+                        ),
                 ),
             ),
-        )
+        ),
+    )
 
     private fun stoppnivaa(
         utbetalesTilId: String,

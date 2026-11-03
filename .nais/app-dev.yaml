@@ -87,6 +87,7 @@ spec:
           ports:
             - port: 1413
         - host: familie-ws-proxy.dev-fss-pub.nais.io
+        - host: sokos-oppdrag-proxy-q1.dev-fss-pub.nais.io
         - host: teamfamilie-unleash-api.nav.cloud.nais.io
 
   observability:

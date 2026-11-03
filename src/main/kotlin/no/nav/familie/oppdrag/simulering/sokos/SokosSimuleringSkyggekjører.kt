@@ -15,6 +15,7 @@ import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import java.util.function.Supplier
 
 /**
  * Skyggekjører simulering mot sokos-oppdrag-proxy (REST) og sammenligner med SOAP-resultatet.
@@ -31,7 +32,7 @@ class SokosSimuleringSkyggekjører(
 ) {
     private val executor =
         ThreadPoolExecutor(
-            1,
+            2,
             2,
             60,
             TimeUnit.SECONDS,
@@ -45,7 +46,11 @@ class SokosSimuleringSkyggekjører(
         soapResultat: DetaljertSimuleringResultat,
     ) {
         try {
-            if (!featureToggleService.isEnabled(FeatureToggle.SKYGGEKJØR_SOKOS_SIMULERING, utbetalingsoppdrag.saksnummer)) {
+            if (!featureToggleService.isEnabled(
+                    FeatureToggle.SKYGGEKJØR_SOKOS_SIMULERING,
+                    utbetalingsoppdrag.saksnummer
+                )
+            ) {
                 return
             }
             val mdc = MDC.getCopyOfContextMap()
@@ -75,9 +80,9 @@ class SokosSimuleringSkyggekjører(
         try {
             val request = requestMapper.tilSokosSimulerBeregningRequest(utbetalingsoppdrag)
             val respons =
-                Metrics.timer(METRIKK_TID).recordCallable {
+                Metrics.timer(METRIKK_TID).record(Supplier {
                     sokosOppdragProxyKlient.simulerBeregning(request)
-                }!!
+                })
             val restResultat = resultatMapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
 
             val sammenligning = SimuleringSammenligner.sammenlign(soap = soapResultat, rest = restResultat)
@@ -88,13 +93,15 @@ class SokosSimuleringSkyggekjører(
                 tell(UTFALL_ULIK)
                 logger.warn(
                     "Skyggesimulering ulik SOAP. saksnummer=$saksnummer fagsystem=$fagsystem " +
-                        "kunISoap=${sammenligning.kunISoap.size} kunIRest=${sammenligning.kunIRest.size} " +
-                        "ulikMottakerType=${sammenligning.ulikMottakerType.size}",
+                            "kunISoap=${sammenligning.kunISoap.size} kunIRest=${sammenligning.kunIRest.size} " +
+                            "ulikMottakerType=${sammenligning.ulikMottakerType.size}",
                 )
                 secureLogger.warn(
                     "Skyggesimulering ulik SOAP. saksnummer=$saksnummer fagsystem=$fagsystem\n" +
-                        "Avvik: ${jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(sammenligning)}\n" +
-                        "REST-respons: ${jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(respons)}",
+                            "Avvik: ${
+                                jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(sammenligning)
+                            }\n" +
+                            "REST-respons: ${jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(respons)}",
                 )
             }
         } catch (e: Exception) {
