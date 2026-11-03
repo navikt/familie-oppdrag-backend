@@ -40,7 +40,7 @@ object SimuleringSammenligner {
                     fom = postering.fom,
                     tom = postering.tom,
                     betalingType = postering.betalingType,
-                    beløp = postering.beløp.stripTrailingZeros(),
+                    beløp = normaliser(postering.beløp),
                     posteringType = postering.posteringType,
                     forfallsdato = postering.forfallsdato,
                     utenInntrekk = postering.utenInntrekk,
@@ -49,6 +49,9 @@ object SimuleringSammenligner {
                 )
             }
         }
+
+    /** Fjerner skala-forskjeller (100.00 → 100) uten å gå over til vitenskapelig notasjon (1E+2). */
+    private fun normaliser(beløp: BigDecimal): BigDecimal = beløp.stripTrailingZeros().let { if (it.scale() < 0) it.setScale(0) else it }
 
     /** Elementer i [a] som ikke finnes i [b], med hensyn til antall forekomster. */
     private fun differanse(
