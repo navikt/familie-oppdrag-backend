@@ -1,19 +1,18 @@
 package no.nav.familie.oppdrag.simulering
 
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
-import no.nav.familie.kontrakter.felles.simulering.BetalingType
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
-import no.nav.familie.kontrakter.felles.simulering.MottakerType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
+import no.nav.familie.oppdrag.simulering.SimuleringUtil.hentOrgNrEllerFnr
+import no.nav.familie.oppdrag.simulering.SimuleringUtil.parseDato
+import no.nav.familie.oppdrag.simulering.SimuleringUtil.utledBetalingType
+import no.nav.familie.oppdrag.simulering.SimuleringUtil.utledMottakerType
 import no.nav.system.os.entiteter.beregningskjema.Beregning
 import no.nav.system.os.entiteter.beregningskjema.BeregningStoppnivaa
 import no.nav.system.os.entiteter.beregningskjema.BeregningStoppnivaaDetaljer
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class SimuleringResultatTransformer {
     fun mapSimulering(
@@ -68,49 +67,4 @@ class SimuleringResultatTransformer {
             klassekode = detaljer.klassekode?.trim(),
             fagsakId = stoppnivaa.fagsystemId.trim(),
         )
-
-    private fun hentOrgNrEllerFnr(orgNrEllerFnr: String): String =
-        if (erOrgNr(orgNrEllerFnr)) {
-            orgNrEllerFnr.substring(2)
-        } else {
-            orgNrEllerFnr
-        }
-
-    private fun utledMottakerType(
-        utbetalesTilId: String,
-        harSammeAktørIdSomBruker: Boolean,
-    ): MottakerType {
-        if (harSammeAktørIdSomBruker) {
-            return MottakerType.BRUKER
-        }
-        return if (erOrgNr(utbetalesTilId)) {
-            MottakerType.ARBG_ORG
-        } else {
-            MottakerType.ARBG_PRIV
-        }
-    }
-
-    private fun erOrgNr(verdi: String): Boolean {
-        if (verdi.isBlank()) {
-            throw IllegalArgumentException("org.nr verdi er tom")
-        }
-        // orgNr i responsen fra økonomi starter med "00"
-        return "00" == verdi.substring(0, 2)
-    }
-
-    private fun utledBetalingType(belop: BigDecimal): BetalingType =
-        if (belop > BigDecimal.ZERO) {
-            BetalingType.DEBIT
-        } else {
-            BetalingType.KREDIT
-        }
-
-    private fun parseDato(dato: String): LocalDate {
-        val dtf = DateTimeFormatter.ofPattern(DATO_PATTERN)
-        return LocalDate.parse(dato, dtf)
-    }
-
-    companion object {
-        private const val DATO_PATTERN = "yyyy-MM-dd"
-    }
 }

@@ -17,3 +17,6 @@ spring:
 OPPDRAG_SERVICE_URL: "https://familie-ws-proxy.dev-fss-pub.nais.io/cics/oppdrag/simulerFpServiceWSBinding"
 SECURITYTOKENSERVICE_URL: https://familie-ws-proxy.dev-fss-pub.nais.io/sts/SecurityTokenServiceProvider/
 WS_PROXY_SCOPE: api://dev-fss.teamfamilie.familie-ws-proxy/.default
+
+SOKOS_OPPDRAG_PROXY_URL: https://sokos-oppdrag-proxy-q1.dev-fss-pub.nais.io
+SOKOS_OPPDRAG_PROXY_SCOPE: api://dev-fss.beregningsplattform.sokos-oppdrag-proxy-q1/.default
