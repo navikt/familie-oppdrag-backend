@@ -35,10 +35,10 @@ object SokosSimuleringResultatMapper {
         }
 
         val perioder = responsSimulering.beregning?.periodeStoppnivaa ?: return DetaljertSimuleringResultat(emptyList())
-        // Kontrakten tillater maks 1200 perioder og 25 detaljer per stoppnivå. Er en liste full, kan Oppdrag ha kuttet svaret.
+        // Kontrakten tillater maks 1200 periodeStoppnivaa og 25 detaljer per stoppnivå. Er en liste full, kan Oppdrag ha kuttet svaret.
         if (perioder.size >= 1200 || perioder.any { (it.beregningStoppnivaa?.stoppnivaaDetaljer?.size ?: 0) >= 25 }) {
             logger.warn(
-                "Full liste i simuleringssvar fra sokos-oppdrag-proxy, svaret kan være avkuttet. saksnummer=${utbetalingsoppdrag.saksnummer}",
+                "Full liste i simuleringssvar fra sokos-oppdrag-proxy, kan være avkuttet. saksnummer=${utbetalingsoppdrag.saksnummer}",
             )
         }
         val brukerId = hentOrgNrEllerFnr(utbetalingsoppdrag.aktoer)

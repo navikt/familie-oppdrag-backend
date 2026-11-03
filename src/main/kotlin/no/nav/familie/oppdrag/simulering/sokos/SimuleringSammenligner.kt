@@ -50,8 +50,7 @@ data class Sammenligningsresultat(
     val kunISoap: List<MottakersPostering>,
     val kunIRest: List<MottakersPostering>,
 ) {
-    val erLik: Boolean
-        get() = kunISoap.isEmpty() && kunIRest.isEmpty()
+    val erLik = kunISoap.isEmpty() && kunIRest.isEmpty()
 }
 
 data class MottakersPostering(
