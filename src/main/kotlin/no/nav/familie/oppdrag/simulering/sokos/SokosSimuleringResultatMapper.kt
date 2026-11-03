@@ -6,6 +6,8 @@ import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
+import no.nav.familie.oppdrag.config.IntegrasjonException
+import no.nav.familie.oppdrag.config.Integrasjonssystem
 import no.nav.familie.oppdrag.simulering.SimuleringUtil.hentOrgNrEllerFnr
 import no.nav.familie.oppdrag.simulering.SimuleringUtil.parseDato
 import no.nav.familie.oppdrag.simulering.SimuleringUtil.utledBetalingType
@@ -21,29 +23,24 @@ class SokosSimuleringResultatMapper {
         utbetalingsoppdrag: Utbetalingsoppdrag,
     ): DetaljertSimuleringResultat {
         val responsSimulering =
-            respons.operationResponse
-                ?.container
-                ?.responsSimulering
-                ?: return DetaljertSimuleringResultat(emptyList())
+            påkrevd(respons.operationResponse?.container?.responsSimulering, "responsSimulering")
 
-        val statusKode = responsSimulering.statusKode
-        if (statusKode != null && statusKode >= STATUSKODE_FEIL) {
-            throw IllegalStateException(
-                "Simulering mot sokos-oppdrag-proxy feilet med statusKode=$statusKode " +
-                    "statusMelding=${responsSimulering.statusMelding}",
-            )
+        val statusKode = påkrevd(responsSimulering.statusKode, "statusKode")
+        if (statusKode >= STATUSKODE_FEIL) {
+            throw SokosSimuleringStatusFeil(statusKode, responsSimulering.statusMelding)
         }
 
         val beregning = responsSimulering.beregning ?: return DetaljertSimuleringResultat(emptyList())
 
         val posteringerPerMottaker = linkedMapOf<String, MutableList<SimulertPostering>>()
         beregning.periodeStoppnivaa
+            .orEmpty()
             .mapNotNull { it.beregningStoppnivaa }
             .forEach { stoppnivaa ->
                 val utbetalesTilId = påkrevd(stoppnivaa.utbetalesTilId, "utbetalesTilId")
                 posteringerPerMottaker
                     .getOrPut(utbetalesTilId) { mutableListOf() }
-                    .addAll(stoppnivaa.stoppnivaaDetaljer.map { tilPostering(stoppnivaa, it) })
+                    .addAll(stoppnivaa.stoppnivaaDetaljer.orEmpty().map { tilPostering(stoppnivaa, it) })
             }
 
         val brukerId = hentOrgNrEllerFnr(utbetalingsoppdrag.aktoer)
@@ -92,3 +89,11 @@ class SokosSimuleringResultatMapper {
         private const val STATUSKODE_FEIL = 8
     }
 }
+
+class SokosSimuleringStatusFeil(
+    statusKode: Int,
+    statusMelding: String?,
+) : IntegrasjonException(
+        Integrasjonssystem.SIMULERING,
+        "Simulering mot sokos-oppdrag-proxy feilet med statusKode=$statusKode statusMelding=$statusMelding",
+    )

@@ -4,6 +4,7 @@ import no.nav.familie.kontrakter.felles.simulering.BetalingType
 import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
 import no.nav.familie.kontrakter.felles.simulering.MottakerType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
+import no.nav.familie.oppdrag.config.Integrasjonssystem
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.Beregning
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.BeregningStoppnivaa
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningResponse.BeregningsPeriode
@@ -154,19 +155,42 @@ class SokosSimuleringResultatMapperTest {
                 OperationResponse(Container(ResponsSimulering(statusKode = 0, beregning = null))),
             )
 
-        val tomRespons = SokosSimulerBeregningResponse()
-
         // Act
         val resultat = mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
-        val resultatFraTomRespons = mapper.tilDetaljertSimuleringResultat(tomRespons, utbetalingsoppdrag)
 
         // Assert
         assertTrue(resultat.simuleringMottaker.isEmpty())
-        assertTrue(resultatFraTomRespons.simuleringMottaker.isEmpty())
     }
 
     @Test
-    fun `statuskode 8 eller høyere gir feil med statuskode og melding`() {
+    fun `respons uten responsSimulering gir feil i stedet for tomt resultat`() {
+        // Arrange
+        val respons = SokosSimulerBeregningResponse(OperationResponse(Container(responsSimulering = null)))
+
+        // Act
+        val feil = assertThrows<IllegalStateException> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+
+        // Assert
+        assertTrue(feil.message!!.contains("responsSimulering"))
+    }
+
+    @Test
+    fun `respons uten statusKode gir feil i stedet for tomt resultat`() {
+        // Arrange
+        val respons =
+            SokosSimulerBeregningResponse(
+                OperationResponse(Container(ResponsSimulering(statusKode = null, beregning = null))),
+            )
+
+        // Act
+        val feil = assertThrows<IllegalStateException> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+
+        // Assert
+        assertTrue(feil.message!!.contains("statusKode"))
+    }
+
+    @Test
+    fun `statuskode 8 eller høyere gir integrasjonsfeil med statuskode og melding`() {
         // Arrange
         val respons =
             SokosSimulerBeregningResponse(
@@ -174,11 +198,12 @@ class SokosSimuleringResultatMapperTest {
             )
 
         // Act
-        val feil = assertThrows<IllegalStateException> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
+        val feil = assertThrows<SokosSimuleringStatusFeil> { mapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag) }
 
         // Assert
         assertTrue(feil.message!!.contains("statusKode=8"))
         assertTrue(feil.message!!.contains("Ugyldig oppdrag"))
+        assertEquals(Integrasjonssystem.SIMULERING, feil.system)
     }
 
     @Test

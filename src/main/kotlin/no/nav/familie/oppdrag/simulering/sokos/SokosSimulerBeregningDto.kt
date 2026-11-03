@@ -199,7 +199,7 @@ data class SokosSimulerBeregningResponse(
         val datoBeregnet: String? = null,
         val kodeFaggruppe: String? = null,
         val belopTotalt: BigDecimal? = null,
-        val periodeStoppnivaa: List<PeriodeStoppnivaa> = emptyList(),
+        val periodeStoppnivaa: List<PeriodeStoppnivaa>? = null,
     )
 
     data class PeriodeStoppnivaa(
@@ -224,7 +224,7 @@ data class SokosSimulerBeregningResponse(
         val typeBilag: String? = null,
         val datoForfall: String? = null,
         val feilkonto: Boolean? = null,
-        val stoppnivaaDetaljer: List<StoppnivaaDetaljer> = emptyList(),
+        val stoppnivaaDetaljer: List<StoppnivaaDetaljer>? = null,
     )
 
     data class StoppnivaaDetaljer(

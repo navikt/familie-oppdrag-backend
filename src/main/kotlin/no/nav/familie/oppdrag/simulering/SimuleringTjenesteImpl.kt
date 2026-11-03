@@ -46,7 +46,10 @@ class SimuleringTjenesteImpl(
         utbetalingsoppdrag: Utbetalingsoppdrag,
     ): SimulerBeregningResponse {
         try {
-            val response = simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest)
+            val response =
+                SimuleringMetrikker.tidta(METRIKK_SOAP_TID, utbetalingsoppdrag.fagSystem) {
+                    simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest)
+                }
             secureLogger.info(
                 "Saksnummer: ${utbetalingsoppdrag.saksnummer} : " +
                     jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response),
@@ -197,6 +200,8 @@ class SimuleringTjenesteImpl(
         }
 
     companion object {
+        private const val METRIKK_SOAP_TID = "simulering.soap.tid"
+
         val secureLogger: Logger = LoggerFactory.getLogger("secureLogger")
     }
 }
