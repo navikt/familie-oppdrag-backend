@@ -292,8 +292,13 @@ class KonsistensavstemmingServiceTest {
 
     @Test
     internal fun `V1 kaster tydelig feil når transaksjonsId mangler i splittet batch og sender ingenting`() {
-        val request =
-            KonsistensavstemmingUtbetalingsoppdrag("BA", emptyList(), LocalDateTime.now())
+        val oppdrag =
+            lagUtbetalingsoppdrag(
+                saksnummer,
+                "1",
+                lagUtbetalingsperiode(periodeId = 1, beløp = 100, behandlingsId = 1),
+            ).utbetalingsoppdrag
+        val request = KonsistensavstemmingUtbetalingsoppdrag("BA", listOf(oppdrag), LocalDateTime.now())
 
         val exception =
             assertThrows<Exception> {
