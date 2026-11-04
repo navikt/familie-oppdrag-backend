@@ -8,6 +8,7 @@ import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
 import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingRequestV2
+import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingUtbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.PerioderForBehandling
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -23,6 +24,7 @@ import no.nav.virksomhet.tjenester.avstemming.informasjon.konsistensavstemmingsd
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate
@@ -286,6 +288,21 @@ class KonsistensavstemmingServiceTest {
         assertEquals(BigInteger.valueOf(33), totalDataMeldingSlot.captured.totaldata.totalAntall)
         assertEquals(BigDecimal.valueOf(123), totalDataMeldingSlot.captured.totaldata.totalBelop)
         assertEquals("AVSL", avsluttmeldingSlot.captured.aksjonsdata.aksjonsType)
+    }
+
+    @Test
+    internal fun `V1 kaster tydelig feil når transaksjonsId mangler i splittet batch og sender ingenting`() {
+        val request =
+            KonsistensavstemmingUtbetalingsoppdrag("BA", emptyList(), LocalDateTime.now())
+
+        val exception =
+            assertThrows<Exception> {
+                konsistensavstemmingService.utførKonsistensavstemming(request, false, false, null)
+            }
+
+        assertThat(exception).isNotInstanceOf(NullPointerException::class.java)
+        assertThat(exception.message).contains("må transaksjonsId være definert")
+        verify(exactly = 0) { avstemmingSender.sendKonsistensAvstemming(any()) }
     }
 
     @Test
