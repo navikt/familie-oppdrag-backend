@@ -7,7 +7,7 @@ import java.math.BigDecimal
 
 /**
  * Sammenligner SOAP (fasit) og REST som multimengder av posteringer per mottaker. Rekkefølgen ignoreres, fordi
- * SOAP grupperer mottakere i et HashMap, og beløp sammenlignes uten skala, slik at 100 og 100.00 er like.
+ * SOAP grupperer mottakere i et HashMap. Beløp sammenlignes med minst to desimaler, slik at 100 og 100.00 er like.
  */
 object SimuleringSammenligner {
     fun sammenlign(
@@ -17,32 +17,30 @@ object SimuleringSammenligner {
         val soapPosteringer = posteringer(soap)
         val restPosteringer = posteringer(rest)
         return Sammenligningsresultat(
-            kunISoap = differanse(soapPosteringer, restPosteringer),
-            kunIRest = differanse(restPosteringer, soapPosteringer),
+            kunISoap = posteringerUtenMatch(soapPosteringer, restPosteringer),
+            kunIRest = posteringerUtenMatch(restPosteringer, soapPosteringer),
         )
     }
 
     private fun posteringer(resultat: DetaljertSimuleringResultat): List<MottakersPostering> =
         resultat.simuleringMottaker.flatMap { mottaker ->
             mottaker.simulertPostering.map {
-                MottakersPostering(mottaker.mottakerNummer, mottaker.mottakerType, it.copy(beløp = utenSkala(it.beløp)))
+                MottakersPostering(mottaker.mottakerNummer, mottaker.mottakerType, it.copy(beløp = medMinstToDesimaler(it.beløp)))
             }
         }
 
-    // stripTrailingZeros alene gir 1E+2 for 100, som er vanskelig å lese i securelog.
-    private fun utenSkala(beløp: BigDecimal): BigDecimal = beløp.stripTrailingZeros().let { if (it.scale() < 0) it.setScale(0) else it }
+    /** 100, 100.0 og 100.000 blir 100.00. Beløp med flere desimaler beholder dem, så de gir avvik i stedet for feil. */
+    private fun medMinstToDesimaler(beløp: BigDecimal): BigDecimal = beløp.setScale(maxOf(2, beløp.stripTrailingZeros().scale()))
 
-    /** Elementer i [a] som ikke finnes i [b], med hensyn til antall forekomster. */
-    private fun differanse(
-        a: List<MottakersPostering>,
-        b: List<MottakersPostering>,
+    /** Posteringene som ikke har en lik postering i [andre]. Hver postering i [andre] matcher bare én gang. */
+    private fun posteringerUtenMatch(
+        posteringer: List<MottakersPostering>,
+        andre: List<MottakersPostering>,
     ): List<MottakersPostering> {
-        val gjenstående = b.groupingBy { it }.eachCount().toMutableMap()
-        return a.filter { postering ->
-            val antall = gjenstående[postering] ?: 0
-            gjenstående[postering] = antall - 1
-            antall <= 0
-        }
+        val antallIAndre = andre.groupingBy { it }.eachCount()
+        return posteringer
+            .groupBy { it }
+            .flatMap { (postering, likePosteringer) -> likePosteringer.drop(antallIAndre[postering] ?: 0) }
     }
 }
 

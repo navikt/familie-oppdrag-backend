@@ -42,10 +42,8 @@ object SokosSimulerBeregningRequestMapper {
         periode: Utbetalingsperiode,
         utbetalingsoppdrag: Utbetalingsoppdrag,
     ): Oppdragslinje {
-        val refDelytelseId =
-            periode.forrigePeriodeId
-                ?.takeUnless { periode.erEndringPåEksisterendePeriode }
-                ?.let { utbetalingsoppdrag.saksnummer + it }
+        // En endring på en eksisterende periode skal ikke referere til forrige periode.
+        val refPeriodeId = periode.forrigePeriodeId.takeUnless { periode.erEndringPåEksisterendePeriode }
 
         return Oppdragslinje(
             kodeEndringLinje = if (periode.erEndringPåEksisterendePeriode) EndringsKode.ENDRING.kode else EndringsKode.NY.kode,
@@ -62,8 +60,8 @@ object SokosSimulerBeregningRequestMapper {
             saksbehId = utbetalingsoppdrag.saksbehandlerId,
             utbetalesTilId = periode.utbetalesTil,
             henvisning = periode.behandlingId.toString(),
-            refFagsystemId = refDelytelseId?.let { utbetalingsoppdrag.saksnummer },
-            refDelytelseId = refDelytelseId,
+            refFagsystemId = refPeriodeId?.let { utbetalingsoppdrag.saksnummer },
+            refDelytelseId = refPeriodeId?.let { utbetalingsoppdrag.saksnummer + it },
             attestant = listOf(Attestant(utbetalingsoppdrag.saksbehandlerId)),
             gradOppdragslinje = periode.utbetalingsgrad?.let { listOf(Grad(GradTypeKode.UTBETALINGSGRAD.kode, it)) },
         )

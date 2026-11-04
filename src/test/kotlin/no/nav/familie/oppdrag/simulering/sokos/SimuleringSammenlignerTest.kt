@@ -37,8 +37,21 @@ class SimuleringSammenlignerTest {
         val sammenligning = SimuleringSammenligner.sammenlign(soap, rest)
 
         // Assert
-        assertEquals(listOf(BigDecimal("100")), sammenligning.kunISoap.map { it.postering.beløp })
-        assertEquals(listOf(BigDecimal("101")), sammenligning.kunIRest.map { it.postering.beløp })
+        assertEquals(listOf(BigDecimal("100.00")), sammenligning.kunISoap.map { it.postering.beløp })
+        assertEquals(listOf(BigDecimal("101.00")), sammenligning.kunIRest.map { it.postering.beløp })
+    }
+
+    @Test
+    fun `beløp med flere enn to desimaler gir avvik`() {
+        // Arrange
+        val soap = resultat(mottaker("111", postering("100.00")))
+        val rest = resultat(mottaker("111", postering("100.005")))
+
+        // Act
+        val sammenligning = SimuleringSammenligner.sammenlign(soap, rest)
+
+        // Assert
+        assertEquals(listOf(BigDecimal("100.005")), sammenligning.kunIRest.map { it.postering.beløp })
     }
 
     @Test

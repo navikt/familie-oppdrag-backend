@@ -25,7 +25,7 @@ class SokosSimuleringSkyggekjører(
     private val featureToggleService: FeatureToggleService,
 ) {
     private val executor =
-        ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, ArrayBlockingQueue(50)) { runnable ->
+        ThreadPoolExecutor(ANTALL_TRÅDER, ANTALL_TRÅDER, 0, TimeUnit.SECONDS, ArrayBlockingQueue(KØSTØRRELSE)) { runnable ->
             Thread(runnable, "sokos-simulering-skygge").apply { isDaemon = true }
         }
 
@@ -35,10 +35,14 @@ class SokosSimuleringSkyggekjører(
     ) {
         try {
             if (!featureToggleService.isEnabled(FeatureToggle.SKYGGEKJØR_SOKOS_SIMULERING, utbetalingsoppdrag.saksnummer)) return
-            val mdc = MDC.getCopyOfContextMap()
+            val mdc = MDC.getCopyOfContextMap().orEmpty()
             executor.execute {
-                MDC.setContextMap(mdc ?: emptyMap())
-                simulerOgSammenlign(utbetalingsoppdrag, soapResultat)
+                MDC.setContextMap(mdc)
+                try {
+                    simulerOgSammenlign(utbetalingsoppdrag, soapResultat)
+                } finally {
+                    MDC.clear()
+                }
             }
         } catch (e: RejectedExecutionException) {
             tell("forkastet", utbetalingsoppdrag)
@@ -95,6 +99,8 @@ class SokosSimuleringSkyggekjører(
     ) = Metrics.counter("simulering.skyggekjoring.utfall", "utfall", utfall, "fagsystem", utbetalingsoppdrag.fagSystem).increment()
 
     companion object {
+        internal const val ANTALL_TRÅDER = 2
+        internal const val KØSTØRRELSE = 50
         private val logger = LoggerFactory.getLogger(SokosSimuleringSkyggekjører::class.java)
         private val secureLogger = LoggerFactory.getLogger("secureLogger")
     }

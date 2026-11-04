@@ -6,6 +6,8 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.oppdrag.featuretoggle.FeatureToggleService
+import no.nav.familie.oppdrag.simulering.sokos.SokosSimuleringSkyggekjører.Companion.ANTALL_TRÅDER
+import no.nav.familie.oppdrag.simulering.sokos.SokosSimuleringSkyggekjører.Companion.KØSTØRRELSE
 import no.nav.familie.oppdrag.simulering.util.lagTestUtbetalingsoppdragForFGBMedEttBarn
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -58,8 +60,10 @@ class SokosSimuleringSkyggekjørerTest {
             error("Nås aldri")
         }
 
-        // Act: 2 kall opptar trådene, 50 fyller køen og det siste forkastes.
-        assertTimeoutPreemptively(Duration.ofSeconds(5)) { repeat(53) { skyggekjører.skyggekjør(utbetalingsoppdrag, soapResultat) } }
+        // Act: de første kallene opptar trådene, de neste fyller køen og det siste forkastes.
+        assertTimeoutPreemptively(Duration.ofSeconds(5)) {
+            repeat(ANTALL_TRÅDER + KØSTØRRELSE + 1) { skyggekjører.skyggekjør(utbetalingsoppdrag, soapResultat) }
+        }
 
         // Assert
         assertEquals(1.0, antall("forkastet"))
