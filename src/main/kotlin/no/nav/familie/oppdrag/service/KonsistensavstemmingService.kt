@@ -28,6 +28,8 @@ class KonsistensavstemmingService(
         sendAvsluttmelding: Boolean,
         transaksjonsId: UUID?,
     ) {
+        sjekkAtTransaktionsIdErSattHvisSplittetBatch(sendStartmelding, sendAvsluttmelding, transaksjonsId)
+
         utførKonsistensavstemming(
             KonsistensavstemmingMetaInfo(
                 fagsystem = Fagsystem.valueOf(request.fagsystem),
