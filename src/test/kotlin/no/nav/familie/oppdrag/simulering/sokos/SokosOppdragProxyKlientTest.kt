@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 
 class SokosOppdragProxyKlientTest {
     @Test
-    fun `bruker feltnavnene fra Swagger-kontrakten og tåler lister som er null og ukjente felt`() {
+    fun `serialiserer request med kontraktens feltnavn og mapper respons med ukjente felt og null-lister`() {
         // Arrange
         // EntraIDRestClientFactory bygger på RestClient.builder(), så testen bruker de samme standardkonverterne.
         val restClientBuilder = RestClient.builder()
