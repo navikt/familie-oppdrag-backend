@@ -1,5 +1,6 @@
 package no.nav.familie.oppdrag.simulering
 
+import io.micrometer.core.instrument.Metrics
 import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
@@ -14,6 +15,7 @@ import no.nav.familie.oppdrag.config.Integrasjonssystem
 import no.nav.familie.oppdrag.iverksetting.Jaxb
 import no.nav.familie.oppdrag.repository.SimuleringLager
 import no.nav.familie.oppdrag.repository.SimuleringLagerTjeneste
+import no.nav.familie.oppdrag.simulering.sokos.SokosSimuleringSkyggekjører
 import no.nav.system.os.entiteter.beregningskjema.Beregning
 import no.nav.system.os.entiteter.beregningskjema.BeregningStoppnivaaDetaljer
 import no.nav.system.os.entiteter.beregningskjema.BeregningsPeriode
@@ -36,6 +38,7 @@ class SimuleringTjenesteImpl(
     @Autowired val simuleringSender: SimuleringSender,
     @Autowired val simulerBeregningRequestMapper: SimulerBeregningRequestMapper,
     @Autowired val simuleringLagerTjeneste: SimuleringLagerTjeneste,
+    @Autowired val sokosSimuleringSkyggekjører: SokosSimuleringSkyggekjører,
 ) : SimuleringTjeneste {
     val simuleringResultatTransformer = SimuleringResultatTransformer()
 
@@ -44,7 +47,10 @@ class SimuleringTjenesteImpl(
         utbetalingsoppdrag: Utbetalingsoppdrag,
     ): SimulerBeregningResponse {
         try {
-            val response = simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest)
+            val response =
+                Metrics
+                    .timer("simulering.soap.tid", "fagsystem", utbetalingsoppdrag.fagSystem)
+                    .record<SimulerBeregningResponse> { simuleringSender.hentSimulerBeregningResponse(simulerBeregningRequest) }
             secureLogger.info(
                 "Saksnummer: ${utbetalingsoppdrag.saksnummer} : " +
                     jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response),
@@ -78,11 +84,11 @@ class SimuleringTjenesteImpl(
         simuleringsLager.responseXml = Jaxb.tilXml(respons)
         simuleringLagerTjeneste.oppdater(simuleringsLager)
 
-        val beregning = respons.response?.simulering ?: return DetaljertSimuleringResultat(emptyList())
-        return simuleringResultatTransformer.mapSimulering(
-            beregning = beregning,
-            utbetalingsoppdrag = utbetalingsoppdrag,
-        )
+        val resultat =
+            respons.response?.simulering?.let { simuleringResultatTransformer.mapSimulering(it, utbetalingsoppdrag) }
+                ?: DetaljertSimuleringResultat(emptyList())
+        sokosSimuleringSkyggekjører.skyggekjør(utbetalingsoppdrag, resultat)
+        return resultat
     }
 
     override fun hentFeilutbetalinger(request: HentFeilutbetalingerFraSimuleringRequest): FeilutbetalingerFraSimulering {
