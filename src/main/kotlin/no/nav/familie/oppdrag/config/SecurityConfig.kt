@@ -26,7 +26,10 @@ class SecurityConfig {
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http {
             authorizeHttpRequests {
-                authorize("/internal/**", permitAll)
+                authorize("/internal", permitAll)
+                authorize("/internal/health/**", permitAll)
+                authorize("/internal/metrics/**", permitAll)
+                authorize("/internal/prometheus", permitAll)
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/swagger-ui.html", permitAll)
