@@ -6,6 +6,8 @@ import no.nav.security.mock.oauth2.MockOAuth2Server
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
@@ -50,10 +52,11 @@ class SecurityIntegrationTest {
 
     @Nested
     inner class OffentligeEndepunkter {
-        @Test
-        fun `skal tillate tilgang til health uten token`() {
+        @ParameterizedTest
+        @ValueSource(strings = ["/internal", "/internal/health", "/internal/metrics", "/internal/metrics/jvm.memory.used"])
+        fun `skal tillate offentlige internal-endepunkter uten token`(path: String) {
             mockMvc
-                .perform(MockMvcRequestBuilders.get("/internal/health"))
+                .perform(MockMvcRequestBuilders.get(path))
                 .andExpect(MockMvcResultMatchers.status().isOk)
         }
 
@@ -79,6 +82,22 @@ class SecurityIntegrationTest {
 
     @Nested
     inner class BeskyttedeEndepunkter {
+        @ParameterizedTest
+        @ValueSource(
+            strings = [
+                "/internal/info",
+                "/internal/mappings",
+                "/internal/status/isAlive",
+                "/internal/healthcheck",
+                "/internal/prometheus/other",
+            ],
+        )
+        fun `skal avvise øvrige internal-endepunkter uten token`(path: String) {
+            mockMvc
+                .perform(MockMvcRequestBuilders.get(path))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        }
+
         @Test
         fun `skal avvise simulering uten token`() {
             mockMvc
