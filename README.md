@@ -1,6 +1,8 @@
 # familie-oppdrag
 Generell proxy mot Oppdragsystemet (OS) for familie-ytelsene
 
+Se [docs/oppdrag-og-okonomi.md](docs/oppdrag-og-okonomi.md) for hvordan appen henger sammen med Oppdragssystemet, og [GLOSSARY.md](GLOSSARY.md) for begrepene.
+
 ## Bygging
 Bygging gjøres med `mvn clean install`. 
 
