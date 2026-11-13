@@ -184,7 +184,3 @@ Ordet motregning brukes om minst tre ting, og vi må undersøke det nærmere:
 - En egen type postering i simuleringssvaret.
 - Posteringer fra Infotrygd når utbetalingen overlapper med det Infotrygd har sendt. Vi skal til slutt ta over hele utbetalingen.
 - Trekk av tilbakekrevingskrav i framtidige utbetalinger, som Gjenny kaller restanser.
-
-### «Conflict 09»
-
-Teamet har brukt navnet «Conflict 09» om svaret Oppdragssystemet gir når det allerede har fått et oppdrag fra oss. Vi finner ingen slik kode i `oppdrag_lager`. Det nærmeste er `BB50022F` (DELYTELSE-ID finnes i oppdragsbasen fra før).
