@@ -170,4 +170,5 @@ enum class Fagsystem {
     EFBT,
     EFSP,
     KS,
+    IT28,
 }

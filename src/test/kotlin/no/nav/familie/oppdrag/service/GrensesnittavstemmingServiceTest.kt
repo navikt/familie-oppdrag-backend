@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.Optional
+import java.util.UUID
 
 class GrensesnittavstemmingServiceTest {
     val fagområde = "EFOG"
@@ -50,6 +51,43 @@ class GrensesnittavstemmingServiceTest {
         } returns Optional.empty<TidligereKjørtGrensesnittavstemming>()
 
         justRun { avstemmingSender.sendGrensesnittAvstemming(capture(slot)) }
+    }
+
+    @Test
+    fun `skal fullføre grensesnittavstemming for IT28 med avstemmings-ID`() {
+        val avstemmingId = UUID.randomUUID()
+        val fra = LocalDateTime.of(2026, 11, 23, 0, 0)
+        val til = fra.plusDays(1)
+        val utbetalingsoppdrag =
+            TestOppdragMedAvstemmingsdato.lagTestUtbetalingsoppdrag(
+                avstemmingstidspunkt = fra.plusHours(12),
+                fagområde = "IT28",
+                utbetalingsperiode =
+                    arrayOf(
+                        TestOppdragMedAvstemmingsdato.lagUtbetalingsperiode().copy(klassifisering = "GHGSORMG"),
+                    ),
+            )
+        every {
+            oppdragLagerRepository.hentIverksettingerForGrensesnittavstemming(fra, til, "IT28", antall, 0)
+        } returns listOf(utbetalingsoppdrag.somAvstemming)
+        every { tidligereKjørteGrensesnittavstemmingerRepository.insert(any()) } answers { firstArg() }
+
+        grensesnittavstemmingService.utførGrensesnittavstemming(
+            GrensesnittavstemmingRequest(
+                fagsystem = "IT28",
+                fra = fra,
+                til = til,
+                avstemmingId = avstemmingId,
+            ),
+        )
+
+        assertThat(slot.map { it.aksjon.aksjonType }).containsExactly(AksjonType.START, AksjonType.DATA, AksjonType.DATA, AksjonType.AVSL)
+        assertThat(slot.map { it.aksjon.avleverendeKomponentKode }).containsOnly("GHGSORMG")
+        assertThat(slot.map { it.aksjon.underkomponentKode }).containsOnly("IT28")
+        assertThat(slot[2].total.totalAntall).isEqualTo(1)
+        verify(exactly = 1) {
+            tidligereKjørteGrensesnittavstemmingerRepository.insert(match { it.id == avstemmingId })
+        }
     }
 
     @Test
