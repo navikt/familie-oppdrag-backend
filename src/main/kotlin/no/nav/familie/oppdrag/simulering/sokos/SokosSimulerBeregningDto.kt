@@ -47,7 +47,7 @@ data class SokosSimulerBeregningRequest(
         val delytelseId: String,
         val kodeKlassifik: String,
         val datoVedtakFom: String,
-        val datoVedtakTom: String,
+        val datoVedtakTom: String?,
         val sats: BigDecimal,
         val typeSats: String,
         val brukKjoreplan: Boolean,

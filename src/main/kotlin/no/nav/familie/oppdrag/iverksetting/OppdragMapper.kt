@@ -77,7 +77,7 @@ class OppdragMapper {
             delytelseId = utbetalingsoppdrag.saksnummer + utbetalingsperiode.periodeId
             kodeKlassifik = utbetalingsperiode.klassifisering
             datoVedtakFom = utbetalingsperiode.vedtakdatoFom.toXMLDate()
-            datoVedtakTom = utbetalingsperiode.vedtakdatoTom.toXMLDate()
+            datoVedtakTom = utbetalingsperiode.vedtakdatoTom?.toXMLDate()
             sats = utbetalingsperiode.sats
             fradragTillegg = OppdragSkjemaConstants.FRADRAG_TILLEGG
             typeSats = SatsTypeKode.fromKode(utbetalingsperiode.satsType.name).kode

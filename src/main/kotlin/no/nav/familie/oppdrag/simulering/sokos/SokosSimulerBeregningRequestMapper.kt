@@ -53,7 +53,7 @@ object SokosSimulerBeregningRequestMapper {
             delytelseId = utbetalingsoppdrag.saksnummer + periode.periodeId,
             kodeKlassifik = periode.klassifisering,
             datoVedtakFom = periode.vedtakdatoFom.toString(),
-            datoVedtakTom = periode.vedtakdatoTom.toString(),
+            datoVedtakTom = periode.vedtakdatoTom?.toString(),
             sats = periode.sats,
             typeSats = SatsTypeKode.fromKode(periode.satsType.name).kode,
             brukKjoreplan = false,

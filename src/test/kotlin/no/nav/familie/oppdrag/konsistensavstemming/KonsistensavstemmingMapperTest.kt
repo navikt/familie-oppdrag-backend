@@ -32,6 +32,25 @@ class KonsistensavstemmingMapperTest {
     private val datoFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     @Test
+    fun `løpende periode tas med i avstemming uten sluttdato`() {
+        val utbetalingsperiode = lagUtbetalingsperiode(beløp = 100).copy(vedtakdatoTom = null)
+        val utbetalingsoppdrag = lagTestUtbetalingsoppdrag(idag, fagområde, "1", utbetalingsperiode)
+        val mapper = KonsistensavstemmingMapper(fagområde, listOf(utbetalingsoppdrag), idag.plusYears(10), 0, 0, true, true)
+
+        val meldinger = mapper.lagAvstemmingsmeldinger()
+
+        val oppdragslinje =
+            meldinger[1]
+                .oppdragsdataListe
+                .single()
+                .oppdragslinjeListe
+                .single()
+        assertThat(oppdragslinje.vedtakPeriode.tom).isNull()
+        assertThat(oppdragslinje.vedtakPeriode.fom).isEqualTo(utbetalingsperiode.vedtakdatoFom.format(datoFormatter))
+        assertEquals(100.toBigDecimal(), meldinger[2].totaldata.totalBelop)
+    }
+
+    @Test
     fun `Tester at det mappes riktig til konsistensavstemming`() {
         val (utbetalingsoppdrag, meldinger) = lagMeldinger(inkluderStartmelding = true, inkluderAvsluttmelding = true)
         assertEquals(4, meldinger.size)
@@ -197,7 +216,7 @@ class KonsistensavstemmingMapperTest {
         assertEquals(utbetalingsperiode.datoForVedtak.format(datoFormatter), actual.vedtakId)
         assertEquals(utbetalingsperiode.klassifisering, actual.klassifikasjonKode)
         assertEquals(utbetalingsperiode.vedtakdatoFom.format(datoFormatter), actual.vedtakPeriode.fom)
-        assertEquals(utbetalingsperiode.vedtakdatoTom.format(datoFormatter), actual.vedtakPeriode.tom)
+        assertEquals(utbetalingsperiode.vedtakdatoTom?.format(datoFormatter), actual.vedtakPeriode.tom)
         assertEquals(utbetalingsperiode.sats, actual.sats)
         assertEquals(SatsTypeKode.fromKode(utbetalingsperiode.satsType.name).kode, actual.satstypeKode)
         assertEquals(OppdragSkjemaConstants.BRUK_KJØREPLAN_DEFAULT, actual.brukKjoreplan)

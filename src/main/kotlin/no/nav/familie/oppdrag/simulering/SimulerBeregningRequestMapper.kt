@@ -94,7 +94,7 @@ class SimulerBeregningRequestMapper {
             delytelseId = utbetalingsoppdrag.saksnummer + utbetalingsperiode.periodeId
             kodeKlassifik = utbetalingsperiode.klassifisering
             datoVedtakFom = utbetalingsperiode.vedtakdatoFom.toString()
-            datoVedtakTom = utbetalingsperiode.vedtakdatoTom.toString()
+            datoVedtakTom = utbetalingsperiode.vedtakdatoTom?.toString()
             sats = utbetalingsperiode.sats
             fradragTillegg = FradragTillegg.T
             typeSats = SatsTypeKode.fromKode(utbetalingsperiode.satsType.name).kode
