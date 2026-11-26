@@ -59,10 +59,11 @@ class SokosSimuleringSkyggekjører(
     ) {
         try {
             val request = SokosSimulerBeregningRequestMapper.tilSokosSimulerBeregningRequest(utbetalingsoppdrag)
+            val behandlingsnummer = Behandlingsnummer.fraFagsystem(utbetalingsoppdrag.fagSystem)
             val respons =
                 Metrics
                     .timer("simulering.skyggekjoring.tid", "fagsystem", utbetalingsoppdrag.fagSystem)
-                    .record<SokosSimulerBeregningResponse> { sokosOppdragProxyKlient.simulerBeregning(request) }
+                    .record<SokosSimulerBeregningResponse> { sokosOppdragProxyKlient.simulerBeregning(request, behandlingsnummer) }
             val restResultat = SokosSimuleringResultatMapper.tilDetaljertSimuleringResultat(respons, utbetalingsoppdrag)
 
             val sammenligning = SimuleringSammenligner.sammenlign(soap = soapResultat, rest = restResultat)
@@ -103,5 +104,25 @@ class SokosSimuleringSkyggekjører(
         internal const val KØSTØRRELSE = 50
         private val logger = LoggerFactory.getLogger(SokosSimuleringSkyggekjører::class.java)
         private val secureLogger = LoggerFactory.getLogger("secureLogger")
+    }
+}
+
+// Behandlingsnummer fra behandlingskatalogen
+enum class Behandlingsnummer(
+    val kode: String,
+) {
+    BA("B284"),
+    KS("B278"),
+    EF("B288"),
+    ;
+
+    companion object {
+        fun fraFagsystem(fagsystem: String): Behandlingsnummer =
+            when (fagsystem) {
+                "BA" -> BA
+                "KS" -> KS
+                "EFOG", "EFBT", "EFSP" -> EF
+                else -> throw IllegalArgumentException("Ingen behandlingsnummer for fagsystem=$fagsystem")
+            }
     }
 }

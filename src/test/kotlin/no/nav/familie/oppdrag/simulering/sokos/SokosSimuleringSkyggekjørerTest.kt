@@ -38,7 +38,7 @@ class SokosSimuleringSkyggekjørerTest {
         // Arrange
         every { featureToggleService.isEnabled(any(), any<String>()) } returns false
         val kalt = CountDownLatch(1)
-        every { klient.simulerBeregning(any()) } answers {
+        every { klient.simulerBeregning(any(), any()) } answers {
             kalt.countDown()
             error("Skal ikke kalles")
         }
@@ -55,7 +55,7 @@ class SokosSimuleringSkyggekjørerTest {
         // Arrange
         every { featureToggleService.isEnabled(any(), any<String>()) } returns true
         // Kallene slippes aldri løs, så de ikke teller i metrikkene til andre tester.
-        every { klient.simulerBeregning(any()) } answers {
+        every { klient.simulerBeregning(any(), any()) } answers {
             CountDownLatch(1).await()
             error("Nås aldri")
         }

@@ -13,15 +13,23 @@ class SokosOppdragProxyKlient(
     @Value("\${SOKOS_OPPDRAG_PROXY_URL}") private val sokosOppdragProxyUrl: String,
     @Qualifier("sokosOppdragProxyRestClient") private val restClient: RestClient,
 ) {
-    fun simulerBeregning(request: SokosSimulerBeregningRequest): SokosSimulerBeregningResponse =
+    fun simulerBeregning(
+        request: SokosSimulerBeregningRequest,
+        behandlingsnummer: Behandlingsnummer,
+    ): SokosSimulerBeregningResponse =
         try {
             restClient
                 .post()
                 .uri("$sokosOppdragProxyUrl/api/osSimulerBeregningApi/simulerBeregning")
+                .header(BEHANDLINGSNUMMER_HEADER, behandlingsnummer.kode)
                 .body(request)
                 .retrieve()
                 .body<SokosSimulerBeregningResponse>() ?: error("Tomt svar fra sokos-oppdrag-proxy")
         } catch (e: Exception) {
             throw IntegrasjonException(Integrasjonssystem.SIMULERING, "Feil ved kall mot sokos-oppdrag-proxy", e)
         }
+
+    companion object {
+        internal const val BEHANDLINGSNUMMER_HEADER = "behandlingsnummer"
+    }
 }
