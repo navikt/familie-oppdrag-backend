@@ -24,6 +24,7 @@ class SokosOppdragProxyKlientTest {
         server
             .expect(requestTo("http://sokos/api/osSimulerBeregningApi/simulerBeregning"))
             .andExpect(header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(header(SokosOppdragProxyKlient.BEHANDLINGSNUMMER_HEADER, Behandlingsnummer.BA.kode))
             .andExpect(
                 jsonPath("$.OsSimulerBeregningOperation.ZS1ICont.requestSimulering.oppdrag.fagsystemId")
                     .value(utbetalingsoppdrag.saksnummer),
@@ -31,7 +32,7 @@ class SokosOppdragProxyKlientTest {
         val request = SokosSimulerBeregningRequestMapper.tilSokosSimulerBeregningRequest(utbetalingsoppdrag)
 
         // Act
-        val respons = SokosOppdragProxyKlient("http://sokos", restClientBuilder.build()).simulerBeregning(request)
+        val respons = SokosOppdragProxyKlient("http://sokos", restClientBuilder.build()).simulerBeregning(request, Behandlingsnummer.BA)
 
         // Assert
         server.verify()
