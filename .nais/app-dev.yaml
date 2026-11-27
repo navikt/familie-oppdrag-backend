@@ -78,6 +78,9 @@ spec:
         - application: grunn-og-hjelpestonad
           namespace: grunn-og-hjelp
           cluster: dev-gcp
+        - application: gravferd-sak
+          namespace: gravferd
+          cluster: dev-gcp
     outbound:
       rules:
         - application: logging
