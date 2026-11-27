@@ -116,7 +116,7 @@ class KonsistensavstemmingMapper(
             vedtakPeriode =
                 Periode().apply {
                     fom = utbetalingsperiode.vedtakdatoFom.format(datoFormatter)
-                    tom = utbetalingsperiode.vedtakdatoTom.format(datoFormatter)
+                    tom = utbetalingsperiode.vedtakdatoTom?.format(datoFormatter)
                 }
             sats = utbetalingsperiode.sats
             satstypeKode = SatsTypeKode.fromKode(utbetalingsperiode.satsType.name).kode
@@ -141,7 +141,7 @@ class KonsistensavstemmingMapper(
     private fun verifiserAtPerioderErAktiv(utbetalingsperiode: Utbetalingsperiode): Boolean {
         val avstemmingsdato = avstemmingsDato.toLocalDate()
         val vedtakdatoTom = utbetalingsperiode.vedtakdatoTom
-        val aktiv = !vedtakdatoTom.isBefore(avstemmingsdato)
+        val aktiv = vedtakdatoTom == null || !vedtakdatoTom.isBefore(avstemmingsdato)
         if (!aktiv) {
             LOG.error(
                 "fagsystem=$fagsystem vedtakdatoTom=$vedtakdatoTom (periodens tom-dato) " +

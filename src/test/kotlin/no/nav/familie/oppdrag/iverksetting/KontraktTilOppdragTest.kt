@@ -3,8 +3,10 @@ package no.nav.familie.oppdrag.iverksetting
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import no.nav.familie.oppdrag.util.TestUtbetalingsoppdrag.utbetalingsoppdragMedTilfeldigAktoer
 import no.trygdeetaten.skjema.oppdrag.Oppdrag110
 import no.trygdeetaten.skjema.oppdrag.OppdragsLinje150
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -12,6 +14,28 @@ import java.time.LocalDate
 
 class KontraktTilOppdragTest {
     private val iDag: LocalDate = LocalDate.now()
+
+    @Test
+    fun `løpende periode og opphør mappes uten sluttdato`() {
+        val mal = utbetalingsoppdragMedTilfeldigAktoer()
+        val løpendePeriode = mal.utbetalingsperiode.single().copy(vedtakdatoTom = null, opphør = null)
+        val utbetalingsoppdrag =
+            mal.copy(
+                utbetalingsperiode =
+                    listOf(
+                        løpendePeriode,
+                        løpendePeriode.copy(erEndringPåEksisterendePeriode = true, opphør = Opphør(iDag)),
+                    ),
+            )
+
+        val oppdrag110 = OppdragMapper().tilOppdrag110(utbetalingsoppdrag)
+
+        Assertions.assertNull(oppdrag110.oppdragsLinje150[0].datoVedtakTom)
+        Assertions.assertNull(oppdrag110.oppdragsLinje150[1].datoVedtakTom)
+        Assertions.assertEquals(iDag.toXMLDate(), oppdrag110.oppdragsLinje150[1].datoStatusFom)
+        val xml = Jaxb.tilXml(OppdragMapper().tilOppdrag(oppdrag110))
+        assertThat(xml).doesNotContain("datoVedtakTom")
+    }
 
     @Test
     fun mappeVedtaketTilMariBerg() {
@@ -145,7 +169,7 @@ class KontraktTilOppdragTest {
         )
         Assertions.assertEquals(utbetalingsperiode.klassifisering, oppdragsLinje150.kodeKlassifik)
         Assertions.assertEquals(utbetalingsperiode.vedtakdatoFom.toXMLDate(), oppdragsLinje150.datoVedtakFom)
-        Assertions.assertEquals(utbetalingsperiode.vedtakdatoTom.toXMLDate(), oppdragsLinje150.datoVedtakTom)
+        Assertions.assertEquals(utbetalingsperiode.vedtakdatoTom?.toXMLDate(), oppdragsLinje150.datoVedtakTom)
         Assertions.assertEquals(utbetalingsperiode.sats, oppdragsLinje150.sats)
         Assertions.assertEquals(OppdragSkjemaConstants.FRADRAG_TILLEGG, oppdragsLinje150.fradragTillegg)
         Assertions.assertEquals(utbetalingsperiode.satsType.name, oppdragsLinje150.typeSats)

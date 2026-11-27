@@ -1,7 +1,9 @@
 package no.nav.familie.oppdrag.simulering.sokos
 
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.oppdrag.iverksetting.Jaxb
 import no.nav.familie.oppdrag.simulering.SimulerBeregningRequestMapper
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.Attestant
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.Enhet
@@ -10,11 +12,36 @@ import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.Oppd
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.Oppdragslinje
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.RequestSimulering
 import no.nav.familie.oppdrag.simulering.util.lagTestUtbetalingsoppdragForFGBMedEttBarn
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class SokosSimulerBeregningRequestMapperTest {
+    @Test
+    fun `løpende periode beholder null i SOAP og REST og utelater sluttdato i JSON`() {
+        val mal = lagTestUtbetalingsoppdragForFGBMedEttBarn()
+        val utbetalingsoppdrag = mal.copy(utbetalingsperiode = mal.utbetalingsperiode.map { it.copy(vedtakdatoTom = null) })
+
+        val soap = SimulerBeregningRequestMapper().tilSimulerBeregningRequest(utbetalingsoppdrag)
+        val rest = SokosSimulerBeregningRequestMapper.tilSokosSimulerBeregningRequest(utbetalingsoppdrag)
+
+        assertNull(
+            soap.request.oppdrag.oppdragslinje
+                .single()
+                .datoVedtakTom,
+        )
+        assertNull(
+            rest.operation.container.requestSimulering.oppdragslinje
+                .single()
+                .datoVedtakTom,
+        )
+        val json = jsonMapper.writeValueAsString(rest)
+        assertThat(json).doesNotContain("datoVedtakTom")
+        assertThat(Jaxb.tilXml(soap)).doesNotContain("datoVedtakTom")
+    }
+
     @Test
     fun `ny periode med opphør, referanse og utbetalingsgrad og endring på eksisterende periode mappes likt som SOAP`() {
         // Arrange
