@@ -1,12 +1,12 @@
 package no.nav.familie.oppdrag.simulering
 
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import no.nav.familie.oppdrag.iverksetting.EndringsKode
 import no.nav.familie.oppdrag.iverksetting.GradTypeKode
 import no.nav.familie.oppdrag.iverksetting.OppdragSkjemaConstants
 import no.nav.familie.oppdrag.iverksetting.SatsTypeKode
 import no.nav.familie.oppdrag.iverksetting.UtbetalingsfrekvensKode
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsperiode
 import no.nav.system.os.entiteter.typer.simpletypes.FradragTillegg
 import no.nav.system.os.entiteter.typer.simpletypes.KodeStatusLinje
 import no.nav.system.os.tjenester.simulerfpservice.simulerfpservicegrensesnitt.SimulerBeregningRequest

@@ -1,9 +1,9 @@
 package no.nav.familie.oppdrag.simulering.sokos
 
 import no.nav.familie.kontrakter.felles.jsonMapper
+import no.nav.familie.kontrakter.felles.oppdrag.Opphør
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.oppdrag.iverksetting.Jaxb
-import no.nav.familie.oppdrag.kontrakt.Opphør
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
 import no.nav.familie.oppdrag.simulering.SimulerBeregningRequestMapper
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.Attestant
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimulerBeregningRequest.Enhet

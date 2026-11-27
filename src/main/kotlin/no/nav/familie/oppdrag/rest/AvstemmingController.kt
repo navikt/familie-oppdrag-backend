@@ -3,9 +3,9 @@ package no.nav.familie.oppdrag.rest
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
 import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingRequestV2
+import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingUtbetalingsoppdrag
 import no.nav.familie.oppdrag.common.RessursUtils.illegalState
 import no.nav.familie.oppdrag.common.RessursUtils.ok
-import no.nav.familie.oppdrag.kontrakt.KonsistensavstemmingUtbetalingsoppdrag
 import no.nav.familie.oppdrag.repository.UtbetalingsoppdragForKonsistensavstemming
 import no.nav.familie.oppdrag.service.Fagsystem
 import no.nav.familie.oppdrag.service.GrensesnittavstemmingService

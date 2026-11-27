@@ -1,7 +1,7 @@
 package no.nav.familie.oppdrag.config
 
 import no.nav.familie.kontrakter.felles.jsonMapper
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.trygdeetaten.skjema.oppdrag.Mmel
 import org.postgresql.util.PGobject
 import org.springframework.context.annotation.Bean

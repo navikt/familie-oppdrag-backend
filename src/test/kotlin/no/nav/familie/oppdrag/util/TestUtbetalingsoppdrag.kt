@@ -1,8 +1,8 @@
 package no.nav.familie.oppdrag.util
 
-import no.nav.familie.oppdrag.kontrakt.Opphør
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsperiode
+import no.nav.familie.kontrakter.felles.oppdrag.Opphør
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime

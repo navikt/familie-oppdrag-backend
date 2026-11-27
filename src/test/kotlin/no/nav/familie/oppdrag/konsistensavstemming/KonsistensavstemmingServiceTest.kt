@@ -8,11 +8,11 @@ import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
 import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingRequestV2
+import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.PerioderForBehandling
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import no.nav.familie.oppdrag.avstemming.AvstemmingSender
-import no.nav.familie.oppdrag.kontrakt.Opphør
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsperiode
 import no.nav.familie.oppdrag.repository.MellomlagringKonsistensavstemming
 import no.nav.familie.oppdrag.repository.MellomlagringKonsistensavstemmingRepository
 import no.nav.familie.oppdrag.repository.OppdragLagerRepository

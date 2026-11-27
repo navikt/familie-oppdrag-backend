@@ -1,9 +1,9 @@
 package no.nav.familie.oppdrag.simulering.util
 
 import io.mockk.InternalPlatformDsl.toStr
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsperiode
 import no.nav.system.os.entiteter.beregningskjema.Beregning
 import no.nav.system.os.entiteter.beregningskjema.BeregningStoppnivaa
 import no.nav.system.os.entiteter.beregningskjema.BeregningStoppnivaaDetaljer

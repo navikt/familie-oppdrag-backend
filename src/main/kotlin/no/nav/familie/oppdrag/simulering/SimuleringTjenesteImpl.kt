@@ -2,6 +2,7 @@ package no.nav.familie.oppdrag.simulering
 
 import io.micrometer.core.instrument.Metrics
 import no.nav.familie.kontrakter.felles.jsonMapper
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.FeilutbetalingerFraSimulering
 import no.nav.familie.kontrakter.felles.simulering.FeilutbetaltPeriode
@@ -12,7 +13,6 @@ import no.nav.familie.oppdrag.config.FinnesIkkeITps
 import no.nav.familie.oppdrag.config.IntegrasjonException
 import no.nav.familie.oppdrag.config.Integrasjonssystem
 import no.nav.familie.oppdrag.iverksetting.Jaxb
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
 import no.nav.familie.oppdrag.repository.SimuleringLager
 import no.nav.familie.oppdrag.repository.SimuleringLagerTjeneste
 import no.nav.familie.oppdrag.simulering.sokos.SokosSimuleringSkyggekjører

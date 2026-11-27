@@ -1,8 +1,8 @@
 package no.nav.familie.oppdrag.iverksetting
 
-import no.nav.familie.oppdrag.kontrakt.Opphør
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
-import no.nav.familie.oppdrag.kontrakt.Utbetalingsperiode
+import no.nav.familie.kontrakter.felles.oppdrag.Opphør
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import no.nav.familie.oppdrag.util.TestUtbetalingsoppdrag.utbetalingsoppdragMedTilfeldigAktoer
 import no.trygdeetaten.skjema.oppdrag.Oppdrag110
 import no.trygdeetaten.skjema.oppdrag.OppdragsLinje150
