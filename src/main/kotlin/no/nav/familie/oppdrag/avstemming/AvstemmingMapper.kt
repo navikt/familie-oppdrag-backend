@@ -15,11 +15,18 @@ object AvstemmingMapper {
     fun fagområdeTilAvleverendeKomponentKode(fagområde: String): String =
         when (fagområde) {
             "EFOG" -> "EF"
+
             "EFBT" -> "EF"
+
             "EFSP" -> "EF"
+
             "BA" -> "BA"
+
             "KS" -> "KS"
+
             "IT28" -> "GHGSORMG"
+
+            // "ITGS" -> "TBD" @TODO Finn ut hva "ITGS" skal mappe til og oppdater.
             else -> throw Error("$fagområde støttes ikke ennå")
         }
 }

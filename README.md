@@ -1,4 +1,4 @@
-# familie-oppdrag
+# familie-oppdrag-backend
 Generell proxy mot Oppdragsystemet (OS) for familie-ytelsene
 
 Se [docs/oppdrag-og-okonomi.md](docs/oppdrag-og-okonomi.md) for hvordan appen henger sammen med Oppdragssystemet, og [GLOSSARY.md](GLOSSARY.md) for begrepene.
@@ -7,9 +7,10 @@ Se [docs/oppdrag-og-okonomi.md](docs/oppdrag-og-okonomi.md) for hvordan appen he
 Bygging gjøres med `mvn clean install`. 
 
 ## Swagger
-http://localhost:8087/swagger-ui.html
+Lokalt: http://localhost:8087/swagger-ui/index.html
+Preprod: https://familie-oppdrag-backend.intern.dev.nav.no/swagger-ui/index.html
 
-## Oppsett for å kjøre Maven lokalt for nyere Mac'er med ARM(M1/M2) prosessorer
+## Oppsett for å kjøre Maven lokalt for nyere Mac'er med ARM(M1, M2 osv.) prosessorer
 Det er ingen docker for ibmmq som er bygget for arm64. Man må dermed skru på Rosetta 2 emulering i ditt dockermiljø.
 #### Rosetta for Colima
 ```
@@ -78,10 +79,10 @@ Merk at stien under `/cics/` er ulik i preprod og prod, fordi basen er
 Lokalt (profilene `dev` og `dev_psql_mq`) brukes `SimuleringSenderMock`, så
 verken proxy eller Oppdrag kontaktes.
 
-## Teste i preprod, f.eks Postman
+## Teste i preprod, f.eks Postman eller swagger
 I q2 er det mulig å hente ut azure test tokens fra azure-token-generator:
-client credential: https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-fss.teamfamilie.familie-oppdrag
-on-behalf-of: https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-fss.teamfamilie.familie-oppdrag
+client credential: https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-gcp.teamfamilie.familie-oppdrag-backend
+on-behalf-of: https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.teamfamilie.familie-oppdrag-backend
 
 
 ### Test med Postman
@@ -104,10 +105,12 @@ Du bør få et 404-svar som ser slik ut:
 }
 ```
 
-## Kikke på database i preprod
-Detaljer ligger [her](https://github.com/navikt/familie/blob/master/doc/utvikling/preprod/kikke_i_databasen)
+## Tilgang til databasene i prod og preprod
 
-Databasen heter `familie-oppdrag` og i skrivende stund er IP-adressen til serveren `10.183.160.86
+Se https://github.com/navikt/familie/blob/master/doc/utvikling/gcp/gcp_kikke_i_databasen.md
 
 ## Kontaktinfo
 For NAV-interne kan henvendelser om appen rettes til #team-familie på slack. Ellers kan man opprette et issue her på github.
+
+### Kode generert av GitHub Copilot
+Dette repoet bruker GitHub Copilot til å generere kode.
