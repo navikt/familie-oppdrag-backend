@@ -58,6 +58,26 @@ internal class OppdragLagerRepositoryJdbcTest {
     }
 
     @Test
+    fun `lagrer og leser oppdrag med null sluttdato uten tap`() {
+        val opprinneligOppdrag = utbetalingsoppdragMedTilfeldigAktoer()
+        val åpentOppdrag =
+            opprinneligOppdrag.copy(
+                utbetalingsperiode = opprinneligOppdrag.utbetalingsperiode.map { it.copy(vedtakdatoTom = null, opphør = null) },
+            )
+        val oppdragLager = åpentOppdrag.somOppdragLager
+
+        oppdragLagerRepository.opprettOppdrag(oppdragLager)
+
+        val lagretOppdrag = oppdragLagerRepository.hentOppdrag(oppdragLager.id)
+        assertThat(lagretOppdrag.utbetalingsoppdrag).isEqualTo(åpentOppdrag)
+        assertThat(
+            lagretOppdrag.utbetalingsoppdrag.utbetalingsperiode
+                .single()
+                .vedtakdatoTom,
+        ).isNull()
+    }
+
+    @Test
     fun skal_ikke_lagre_duplikat() {
         val oppdragLager = utbetalingsoppdragMedTilfeldigAktoer().somOppdragLager
 

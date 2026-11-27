@@ -2,10 +2,10 @@ package no.nav.familie.oppdrag.simulering.sokos
 
 import io.micrometer.core.instrument.Metrics
 import no.nav.familie.kontrakter.felles.jsonMapper
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.oppdrag.featuretoggle.FeatureToggle
 import no.nav.familie.oppdrag.featuretoggle.FeatureToggleService
+import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.core.NestedExceptionUtils

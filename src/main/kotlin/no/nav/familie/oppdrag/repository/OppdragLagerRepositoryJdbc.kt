@@ -3,7 +3,7 @@ package no.nav.familie.oppdrag.repository
 import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
 import no.trygdeetaten.skjema.oppdrag.Mmel
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.RowMapper

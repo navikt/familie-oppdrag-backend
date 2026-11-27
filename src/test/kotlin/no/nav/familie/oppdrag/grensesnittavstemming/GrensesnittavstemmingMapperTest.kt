@@ -1,8 +1,8 @@
 package no.nav.familie.oppdrag.grensesnittavstemming
 
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.oppdrag.avstemming.SystemKode
+import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
 import no.nav.familie.oppdrag.repository.OppdragTilAvstemming
 import no.nav.familie.oppdrag.repository.somAvstemming
 import no.nav.familie.oppdrag.util.TestOppdragMedAvstemmingsdato.lagTestUtbetalingsoppdrag

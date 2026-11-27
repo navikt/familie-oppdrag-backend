@@ -1,6 +1,6 @@
 package no.nav.familie.oppdrag.service
 
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
+import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
 import no.nav.familie.oppdrag.repository.MellomlagringKonsistensavstemming
 import no.nav.familie.oppdrag.repository.MellomlagringKonsistensavstemmingRepository
 import org.slf4j.Logger

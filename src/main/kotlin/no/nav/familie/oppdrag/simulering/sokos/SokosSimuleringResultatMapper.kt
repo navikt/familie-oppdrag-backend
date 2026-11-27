@@ -1,6 +1,5 @@
 package no.nav.familie.oppdrag.simulering.sokos
 
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
@@ -8,6 +7,7 @@ import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import no.nav.familie.oppdrag.config.IntegrasjonException
 import no.nav.familie.oppdrag.config.Integrasjonssystem
+import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
 import no.nav.familie.oppdrag.simulering.SimuleringUtil.hentOrgNrEllerFnr
 import no.nav.familie.oppdrag.simulering.SimuleringUtil.parseDato
 import no.nav.familie.oppdrag.simulering.SimuleringUtil.utledBetalingType

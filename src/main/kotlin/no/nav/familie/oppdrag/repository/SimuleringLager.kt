@@ -1,9 +1,9 @@
 package no.nav.familie.oppdrag.repository
 
 import no.nav.familie.kontrakter.felles.jsonMapper
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
-import no.nav.familie.kontrakter.felles.oppdrag.behandlingsIdForFørsteUtbetalingsperiode
 import no.nav.familie.oppdrag.iverksetting.Jaxb
+import no.nav.familie.oppdrag.kontrakt.Utbetalingsoppdrag
+import no.nav.familie.oppdrag.kontrakt.behandlingsIdForFørsteUtbetalingsperiode
 import no.nav.system.os.tjenester.simulerfpservice.simulerfpservicegrensesnitt.SimulerBeregningRequest
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
